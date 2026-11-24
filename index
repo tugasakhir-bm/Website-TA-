@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal Tugas Akhir · Business Mathematics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#14306b;--navy2:#0e2450;--ink:#18223a;--mute:#5d6782;--line:#dfe4ee;--bg:#f4f6fa;--card:#fff;--teal:#0f8a7e;--amber:#b7791f;--red:#c53030;--blue:#2b59c3;--r:12px}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 "Plus Jakarta Sans",system-ui,sans-serif}
+a{color:var(--blue)}
+header{background:var(--navy);color:#fff}
+.hwrap{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+.brand{display:flex;gap:14px;align-items:center}
+.brand img{height:34px;background:#fff;border-radius:6px;padding:3px 6px}
+.brand b{display:block;font-size:18px;font-weight:800;letter-spacing:-.01em}
+.brand span{font-size:12.5px;opacity:.8}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav a{color:#fff;text-decoration:none;padding:9px 14px;border-radius:9px;font-weight:600;font-size:14px}
+nav a.on{background:#ffffff22}nav a:hover{background:#ffffff18}
+main{max-width:1180px;margin:0 auto;padding:22px 20px 60px}
+h1{font-size:clamp(24px,3vw,32px);line-height:1.15;margin:0 0 6px;font-weight:800;letter-spacing:-.02em}
+h2{font-size:18px;margin:0 0 12px;font-weight:800}
+h3{font-size:15px;margin:0 0 8px;font-weight:700}
+.lead{color:var(--mute);margin:0 0 18px;max-width:70ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:16px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+@media(max-width:820px){.grid2{grid-template-columns:minmax(0,1fr)}}
+label.f{display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:13.5px;margin-bottom:12px}
+label.f small{font-weight:400;color:var(--mute)}
+input,select,textarea{font:inherit;font-size:15px;border:1px solid #c9d1e1;border-radius:9px;padding:9px 11px;background:#fff;color:var(--ink);min-height:42px;width:100%}
+textarea{min-height:70px;resize:vertical}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid #2b59c355;outline-offset:1px;border-color:var(--blue)}
+button{font:inherit;font-weight:700;font-size:14px;border-radius:9px;border:1px solid #c9d1e1;background:#fff;color:var(--ink);padding:0 15px;min-height:42px;cursor:pointer}
+button.pri{background:var(--navy);border-color:var(--navy);color:#fff}
+button.pri:hover{background:var(--navy2)}
+button.ghost{background:transparent}
+button.danger{color:var(--red);border-color:#f0c4c4}
+button[disabled]{opacity:.5;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.seg{display:inline-flex;border:1px solid #c9d1e1;border-radius:10px;overflow:hidden;margin-bottom:14px}
+.seg button{border:0;border-radius:0;min-height:44px;padding:0 18px}
+.seg button.on{background:var(--navy);color:#fff}
+.kodebox{border:1px dashed #b9c4dc;border-radius:10px;padding:12px 14px;background:#f8faff;font-size:14px;margin-bottom:12px}
+.kodebox b{font-weight:700}
+.req{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.req:first-child{border-top:0}
+.req .no{width:30px;height:30px;border-radius:8px;background:#eef2fb;color:var(--navy);display:grid;place-items:center;font-weight:800;font-size:13px}
+.req .t{font-weight:700}.req .d{color:var(--mute);font-size:13px}
+.req .pick{display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-size:12.5px;max-width:260px}
+.req .pick .fn{color:var(--teal);font-weight:600;word-break:break-all;text-align:right}
+.req .pick .er{color:var(--red);text-align:right}
+@media(max-width:640px){.req{grid-template-columns:30px minmax(0,1fr)}.req .pick{grid-column:2;align-items:flex-start}.req .pick .fn,.req .pick .er{text-align:left}}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:99px;background:#eef2fb;color:var(--navy);margin-left:6px;vertical-align:1px}
+.tag.opt{background:#f3f4f6;color:#6b7280}
+.note{color:var(--mute);font-size:13px}
+.msg{border-radius:10px;padding:12px 14px;margin:10px 0;font-size:14px}
+.msg.ok{background:#e6f6f3;color:#0b5f57}.msg.err{background:#fdecec;color:#8f1d1d}.msg.info{background:#eef2fb;color:var(--navy)}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+.s-menunggu{background:#fff4e0;color:#8a5a00}.s-perbaikan{background:#fdecec;color:#9b1c1c}.s-diterima{background:#e6f0ff;color:#1e47a3}
+.s-dijadwalkan{background:#e6f6f3;color:#0b6b61}.s-selesai{background:#eceff5;color:#3f4a63}.s-ditolak{background:#f3f4f6;color:#6b7280}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:12.5px;color:var(--mute);font-weight:700;white-space:nowrap;background:#fafbfd}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.click{cursor:pointer}tr.click:hover td{background:#f6f8fd}
+.scroll{overflow-x:auto}
+.agenda{display:grid;gap:12px}
+.day{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
+.day h3{margin:0;padding:10px 14px;background:#f1f4fb;font-size:14.5px}
+.slot{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;padding:11px 14px;border-top:1px solid var(--line)}
+.slot:first-of-type{border-top:0}
+.slot .jam{font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums}
+@media(max-width:560px){.slot{grid-template-columns:minmax(0,1fr)}}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;border-bottom:1px solid var(--line)}
+.tabs button{border:0;border-bottom:3px solid transparent;border-radius:0;background:transparent;min-height:44px}
+.tabs button.on{border-bottom-color:var(--navy);color:var(--navy)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.stat b{display:block;font-size:24px;font-weight:800;line-height:1.1}.stat span{color:var(--mute);font-size:13px}
+dialog{border:0;border-radius:14px;padding:0;width:min(860px,96vw);max-height:92vh;box-shadow:0 20px 60px #0003}
+dialog::backdrop{background:#0b163088}
+.dh{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px;z-index:1}
+.db{padding:16px 18px}
+.files{list-style:none;margin:0;padding:0}
+.files li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.drop{display:block;border:2px dashed #b9c4dc;border-radius:12px;padding:20px;text-align:center;background:#f8faff;cursor:pointer}
+.drop.over{border-color:var(--teal);background:#eefaf8}
+.warn{color:var(--amber);font-size:13px}
+.hide{display:none!important}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;z-index:50;max-width:92vw}
+.toast.on{opacity:1}
+.prog{height:8px;background:#e7ebf3;border-radius:99px;overflow:hidden;margin-top:8px}.prog i{display:block;height:100%;background:var(--teal);width:0;transition:width .2s}
+@media(max-width:640px){table.stack thead{display:none}table.stack tr{display:grid;padding:8px 0;border-bottom:1px solid var(--line)}table.stack td{border:0;padding:3px 0 3px 8.5em;position:relative;text-align:left}table.stack td::before{content:attr(data-l);position:absolute;left:0;width:8em;color:var(--mute);font-size:12.5px}table.stack td:empty{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hwrap">
+    <div class="brand"><img alt="Universitas Prasetiya Mulya" src="data:image/jpeg;base64,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"><div><b>Portal Tugas Akhir</b><span>S1 Business Mathematics · Seminar Proposal &amp; Sidang Skripsi</span></div></div>
+    <nav><a href="#daftar" data-v="daftar">Pendaftaran</a><a href="#status" data-v="status">Status &amp; Jadwal</a><a href="#admin" data-v="admin">Admin</a></nav>
+  </div>
+</header>
+<main>
+  <div id="cfgwarn" class="msg err hide">Portal belum terhubung ke Supabase. Isi <b>SUPABASE_URL</b> dan <b>SUPABASE_ANON_KEY</b> di bagian atas skrip file ini.</div>
+
+  <!-- ===================== PENDAFTARAN ===================== -->
+  <section id="v-daftar" class="view">
+    <h1>Pendaftaran Seminar &amp; Sidang</h1>
+    <p class="lead">Pilih jenis ujian dan Kode (No. Kelompok / No. Individu) sesuai surat penugasan pembimbingan, lalu unggah semua syarat. Formulir cukup ditandatangani digital, tidak perlu tanda tangan basah. Nama file akan disesuaikan otomatis.</p>
+    <form id="fdaftar" novalidate>
+      <div class="card">
+        <div class="seg" role="group" aria-label="Jenis ujian">
+          <button type="button" data-j="seminar" class="on">Seminar Proposal</button>
+          <button type="button" data-j="sidang">Sidang Skripsi</button>
+        </div>
+        <div class="grid2">
+          <div>
+            <label class="f">Kode Kelompok / Individu
+              <select id="kode" required><option value="">Memuat daftar…</option></select>
+            </label>
+            <div id="kodeinfo" class="kodebox hide"></div>
+            <label class="f">NIM Anda <small>Harus salah satu anggota Kode di atas</small>
+              <input id="nim" inputmode="numeric" autocomplete="off" placeholder="231023100xx" required>
+              <span id="nimmsg" class="note"></span>
+            </label>
+          </div>
+          <div>
+            <label class="f">Email aktif <small>Untuk dihubungi admin bila ada berkas yang perlu diperbaiki</small>
+              <input id="email" type="email" autocomplete="email" required placeholder="nama@student.prasetiyamulya.ac.id">
+            </label>
+            <label class="f">No. WhatsApp <small>Opsional</small>
+              <input id="hp" inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxxxx">
+            </label>
+            <label class="f">Judul Tugas Akhir
+              <textarea id="judul" required></textarea>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h2 id="reqtitle">Syarat Pendaftaran Seminar Proposal</h2>
+        <p class="note" style="margin-top:-6px">Format PDF kecuali disebutkan lain. Maksimal 25 MB per file (bahan presentasi seminar maks. 10 MB).</p>
+        <div id="reqs"></div>
+      </div>
+      <div id="sendmsg"></div>
+      <div class="row"><button class="pri" id="kirim" type="submit">Kirim pendaftaran</button><span class="note" id="kirimnote"></span></div>
+      <div class="prog hide" id="prog"><i></i></div>
+    </form>
+  </section>
+
+  <!-- ===================== STATUS ===================== -->
+  <section id="v-status" class="view hide">
+    <h1>Status &amp; Jadwal</h1>
+    <p class="lead">Status pendaftaran terbaru tiap Kode dan jadwal yang sudah ditetapkan admin.</p>
+    <div class="tabs" id="stabs"><button class="on" data-t="seminar">Seminar Proposal</button><button data-t="sidang">Sidang Skripsi</button></div>
+    <div class="row" style="margin-bottom:12px"><input id="scari" placeholder="Cari Kode atau nama…" style="max-width:320px"></div>
+    <h2>Jadwal</h2>
+    <div id="agenda" class="agenda"></div>
+    <h2 style="margin-top:22px">Status pendaftaran</h2>
+    <div class="card scroll" style="padding:0"><table class="stack"><thead><tr><th>Kode</th><th>Anggota</th><th>Status</th><th>Catatan admin</th><th>Didaftarkan</th></tr></thead><tbody id="sbody"></tbody></table></div>
+  </section>
+
+  <!-- ===================== ADMIN ===================== -->
+  <section id="v-admin" class="view hide">
+    <div id="alogin" class="card" style="max-width:420px">
+      <h2>Masuk admin</h2>
+      <form id="flogin">
+        <label class="f">Email<input id="lemail" type="email" autocomplete="username" required></label>
+        <label class="f">Kata sandi<input id="lpass" type="password" autocomplete="current-password" required></label>
+        <div id="lmsg"></div>
+        <button class="pri" type="submit">Masuk</button>
+      </form>
+    </div>
+    <div id="apanel" class="hide">
+      <div class="row" style="justify-content:space-between;margin-bottom:6px"><h1 style="margin:0">Admin</h1><div class="row"><span class="note" id="awho"></span><button class="ghost" id="logout">Keluar</button></div></div>
+      <div class="tabs" id="atabs"><button class="on" data-t="pend">Pendaftaran</button><button data-t="jadwal">Jadwal</button><button data-t="nilai">Nilai &amp; Rekap</button><button data-t="roster">Data Kode</button></div>
+
+      <div id="t-pend">
+        <div class="stats" id="pstats"></div>
+        <div class="row" style="margin-bottom:12px">
+          <select id="pjenis" style="max-width:180px"><option value="">Semua jenis</option><option value="seminar">Seminar</option><option value="sidang">Sidang</option></select>
+          <select id="pstatus" style="max-width:220px"><option value="">Semua status</option></select>
+          <input id="pcari" placeholder="Cari Kode / nama / judul" style="max-width:260px">
+          <label class="row note" style="gap:6px"><input type="checkbox" id="priwayat" style="width:auto;min-height:0"> Tampilkan riwayat</label>
+          <button id="pzip">Unduh terpilih (.zip)</button>
+          <button id="prefresh" class="ghost">Muat ulang</button>
+        </div>
+        <div class="card scroll" style="padding:0"><table><thead><tr><th><input type="checkbox" id="pall" style="width:auto;min-height:0" aria-label="Pilih semua"></th><th>Didaftarkan</th><th>Jenis</th><th>Kode</th><th>Anggota</th><th>Judul</th><th class="n">Berkas</th><th>Status</th><th>Jadwal</th></tr></thead><tbody id="pbody"></tbody></table></div>
+      </div>
+
+      <div id="t-jadwal" class="hide">
+        <div class="row" style="margin-bottom:12px"><select id="jjenis" style="max-width:180px"><option value="">Semua jenis</option><option value="seminar">Seminar</option><option value="sidang">Sidang</option></select><button id="jxlsx">Unduh jadwal (Excel)</button></div>
+        <div id="jagenda" class="agenda"></div>
+      </div>
+
+      <div id="t-nilai" class="hide">
+        <div class="grid2">
+          <div class="card">
+            <h2>Unggah Formulir Penilaian (PDF)</h2>
+            <label class="drop" id="ndrop" for="nfiles"><b>Seret PDF Formulir Penilaian ke sini</b><br><span class="note">Seminar, Sidang, Proses Bimbingan. Nilai dibaca langsung dari isian form.</span></label>
+            <input type="file" id="nfiles" accept=".pdf,application/pdf" multiple class="hide">
+            <div id="nparse"></div>
+          </div>
+          <div class="card">
+            <h2>Input nilai manual</h2>
+            <div class="grid2" style="gap:10px">
+              <label class="f">Jenis<select id="mjenis"><option value="seminar">Seminar Proposal</option><option value="sidang">Sidang Skripsi</option><option value="bimbingan">Proses Bimbingan</option></select></label>
+              <label class="f">Peran<select id="mperan"><option>Pembimbing</option><option>Penguji</option></select></label>
+            </div>
+            <label class="f">Mahasiswa<select id="mnim"></select></label>
+            <label class="f">Nama penilai<input id="mpenilai" placeholder="mis. Dr. Yeftanus Antonio, M.Si."></label>
+            <div class="grid2" style="gap:10px">
+              <label class="f">Nilai total (0–100)<input id="mtotal" inputmode="decimal"></label>
+              <label class="f">Tanggal<input id="mtgl" type="date"></label>
+            </div>
+            <div id="mmsg"></div>
+            <button class="pri" id="msave">Simpan nilai</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="row" style="justify-content:space-between"><h2 style="margin:0">Rekap nilai akhir</h2><div class="row"><button id="nxlsx" class="pri">Unduh Excel</button></div></div>
+          <p class="note">Seminar &amp; Sidang = <span id="fx1"></span>. Nilai Akhir = <span id="fx2"></span>.
+            <button class="ghost" id="nbobot" style="min-height:30px;padding:0 8px">Ubah bobot</button></p>
+          <div id="bobotbox" class="hide row" style="margin-bottom:10px"></div>
+          <div class="scroll"><table><thead><tr><th>Kode</th><th>NIM</th><th>Nama</th><th class="n">Tgl Seminar</th><th class="n">Seminar</th><th class="n">Tgl Sidang</th><th class="n">Sidang</th><th class="n">Bimbingan</th><th class="n">Akhir</th><th>Catatan</th></tr></thead><tbody id="rbody"></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="row" style="justify-content:space-between"><h2 style="margin:0">Data nilai tersimpan</h2><input id="ncari" placeholder="Cari NIM / nama / penilai" style="max-width:260px"></div>
+          <div class="scroll"><table><thead><tr><th>Jenis</th><th>Peran</th><th>Penilai</th><th>NIM</th><th>Nama</th><th class="n">Total</th><th class="n">Tanggal</th><th>Sumber</th><th></th></tr></thead><tbody id="nbody"></tbody></table></div>
+        </div>
+      </div>
+
+      <div id="t-roster" class="hide">
+        <p class="note">Sumber: Penugasan Pembimbingan TA Angkatan 2023. Perubahan data Kode dapat dilakukan di Supabase → Table Editor (tabel <code>roster</code> dan <code>roster_anggota</code>).</p>
+        <div class="card scroll" style="padding:0"><table><thead><tr><th>Kode</th><th>Anggota (NIM)</th><th>Pembimbing 1</th><th>Pembimbing 2</th></tr></thead><tbody id="rsbody"></tbody></table></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dialog id="dlg"><div class="dh"><div><b id="dtitle"></b><div class="note" id="dsub"></div></div><button class="ghost" id="dclose" aria-label="Tutup">Tutup</button></div><div class="db" id="dbody"></div></dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+/* Rekap Nilai TA - inti pembacaan formulir & perhitungan (dipakai halaman web dan uji Node) */
+var RK = (function () {
+  var TYPES = {
+    seminar: { label: "Seminar Proposal", short: "Seminar", codes: ["A1", "A2", "A3", "A4", "A5"], w: [20, 30, 15, 10, 25] },
+    sidang: { label: "Sidang Tugas Akhir", short: "Sidang", codes: ["A1", "A2", "A3", "A4", "A5"], w: [35, 15, 15, 10, 25] },
+    bimbingan: { label: "Proses Bimbingan", short: "Bimbingan", codes: ["A6-1", "A6-2", "A6-3"], w: [25, 40, 35] }
+  };
+  var DEFAULT_RULES = { pemb: 60, peng: 40, sem: 30, sid: 30, bimb: 40 };
+
+  function num(s) {
+    s = String(s == null ? "" : s).replace(/\s/g, "").replace(",", ".");
+    if (s === "") return NaN;
+    var v = Number(s);
+    return isFinite(v) ? v : NaN;
+  }
+  function normNim(s) { return String(s || "").replace(/\D/g, ""); }
+  function normName(s) { return String(s || "").trim().replace(/\s+/g, " "); }
+  var BULAN = ["januari","februari","maret","april","mei","juni","juli","agustus","september","oktober","november","desember"];
+  var ALIAS = {jan:1,feb:2,peb:2,mar:3,apr:4,mei:5,may:5,jun:6,jul:7,agu:8,agt:8,aug:8,sep:9,okt:10,oct:10,nov:11,nop:11,des:12,dec:12};
+  /* "20/11/2026" atau "Tangerang, 20 November 2026" -> "20/11/2026" ("" bila tidak terbaca) */
+  function parseTgl(s) {
+    s = String(s || "").replace(/,/g, " ").replace(/\s+/g, " ").trim();
+    var m = s.match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/), d, mo, y;
+    if (m) { d = +m[1]; mo = +m[2]; y = +m[3]; }
+    else {
+      m = s.match(/(\d{1,2}) ([A-Za-z]+)\.? (\d{4})/);
+      if (!m) return "";
+      d = +m[1]; y = +m[3];
+      var nm = m[2].toLowerCase(); mo = BULAN.indexOf(nm) + 1 || ALIAS[nm.substr(0, 3)] || 0;
+    }
+    var dt = new Date(y, mo - 1, d);
+    if (!mo || dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return "";
+    return (d < 10 ? "0" : "") + d + "/" + (mo < 10 ? "0" : "") + mo + "/" + y;
+  }
+  function tglKey(t) { var p = t.split("/"); return p.length === 3 ? p[2] + p[1] + p[0] : ""; }
+  function mode(list) {
+    var c = {}, best = "", n = 0;
+    list.forEach(function (x) { if (!x) return; c[x] = (c[x] || 0) + 1; if (c[x] > n) { n = c[x]; best = x; } });
+    return best;
+  }
+  function avg(a) { if (!a.length) return null; var t = 0; for (var i = 0; i < a.length; i++) t += a[i]; return t / a.length; }
+  function r2(x) { return x == null ? null : Math.round(x * 100 + 1e-9) / 100; }
+
+  function widgetHidden(L, field) {
+    try {
+      var w = field.acroField.getWidgets()[0];
+      var f = w.dict.get(L.PDFName.of("F"));
+      return f ? ((f.asNumber() & 2) === 2) : false;
+    } catch (e) { return false; }
+  }
+
+  /* Baca satu PDF -> record */
+  async function readPdf(L, bytes, file) {
+    var rec = { file: file, problems: [], students: [], sigs: [] };
+    var doc, form;
+    try { doc = await L.PDFDocument.load(bytes, { ignoreEncryption: true, updateMetadata: false }); }
+    catch (e) { rec.error = "File tidak dapat dibaca sebagai PDF."; return rec; }
+    try { form = doc.getForm(); } catch (e) { rec.error = "PDF ini tidak memiliki isian form."; return rec; }
+    var v = {};
+    var fields = form.getFields();
+    for (var i = 0; i < fields.length; i++) {
+      var f = fields[i], n = f.getName();
+      try {
+        if (f instanceof L.PDFTextField) v[n] = f.getText() || "";
+        else if (f instanceof L.PDFDropdown) v[n] = (f.getSelected() || [])[0] || "";
+        else if (f instanceof L.PDFCheckBox) v[n] = f.isChecked();
+        else if (f instanceof L.PDFSignature) {
+          if (!widgetHidden(L, f)) rec.sigs.push({ name: n, signed: !!f.acroField.dict.get(L.PDFName.of("V")) });
+        }
+      } catch (e) { /* field tidak terbaca: abaikan */ }
+    }
+    return fromValues(v, rec);
+  }
+
+  /* Dari nilai-nilai field -> record (dipisah agar bisa diuji tanpa PDF) */
+  function fromValues(v, rec) {
+    var T = TYPES[v.form_type];
+    if (!T) { rec.error = "Bukan Formulir Penilaian TA versi isian (field form_type tidak ditemukan)."; return rec; }
+    rec.type = v.form_type;
+    rec.judul = normName(v.judul);
+    rec.tgl = parseTgl(v.tanggal) || parseTgl(v.tempat_tgl);
+    if (rec.type === "bimbingan") {
+      rec.role = "Pembimbing";
+      var two = String(v.jml_pemb || "").indexOf("2") >= 0;
+      rec.penilai = [normName(v.nama_p1), two ? normName(v.nama_p2) : ""].filter(Boolean).join(" & ");
+    } else {
+      rec.role = (v.peran === "Pembimbing" || v.peran === "Penguji") ? v.peran : null;
+      if (!rec.role) rec.problems.push("Peran penilai belum dipilih (form tidak dihitung)");
+      rec.penilai = normName(v.nama_penilai);
+    }
+    if (!rec.penilai) rec.problems.push("Nama penilai kosong");
+    if (!rec.tgl) rec.problems.push("Tanggal belum diisi");
+    var n = parseInt(String(v.jml_mhs || "1"), 10) || 1;
+    for (var k = 1; k <= n; k++) {
+      var sfx = k === 1 ? "" : String(k);
+      var st = { k: k, nim: normNim(v["nim" + sfx]), nama: normName(v["nama" + sfx]), scores: [], total: null };
+      var ok = true;
+      for (var i = 0; i < T.w.length; i++) {
+        var s = num(v["c" + (i + 1) + "_" + k]);
+        st.scores.push(isNaN(s) ? null : s);
+        if (isNaN(s) || s < 0 || s > 100) ok = false;
+      }
+      if (ok) {
+        var t = 0;
+        for (var j = 0; j < T.w.length; j++) t += st.scores[j] * T.w[j] / 100;
+        st.total = t;
+      } else rec.problems.push("Nilai mahasiswa " + k + " belum lengkap");
+      if (!st.nim) rec.problems.push("NIM mahasiswa " + k + " kosong");
+      rec.students.push(st);
+    }
+    var nSig = rec.sigs.length, nSigned = rec.sigs.filter(function (x) { return x.signed; }).length;
+    rec.signed = nSig > 0 && nSigned === nSig;
+    if (nSig && !rec.signed) rec.problems.push(nSigned ? "Tanda tangan belum lengkap" : "Belum ditandatangani");
+    return rec;
+  }
+
+  /* Gabungkan semua record -> baris rekap per NIM */
+  function aggregate(records, rules) {
+    rules = rules || DEFAULT_RULES;
+    var entries = [], seen = {}, replaced = [];
+    records.forEach(function (rec, ri) {
+      if (rec.error || !rec.role) return;
+      rec.students.forEach(function (st) {
+        if (!st.nim || st.total == null) return;
+        var e = { ri: ri, nim: st.nim, nama: st.nama, type: rec.type, role: rec.role, penilai: rec.penilai,
+                  total: st.total, file: rec.file, signed: rec.signed, tgl: rec.tgl || "" };
+        var key = rec.penilai ? [rec.type, rec.role, rec.penilai.toLowerCase(), st.nim].join("|") : null;
+        if (key && seen[key] != null) { replaced.push(entries[seen[key]]); entries[seen[key]] = e; }
+        else { if (key) seen[key] = entries.length; entries.push(e); }
+      });
+    });
+    var by = {};
+    entries.forEach(function (e) {
+      var s = by[e.nim] || (by[e.nim] = { nim: e.nim, nama: "", judul: "", entries: [],
+        seminar: { pemb: [], peng: [] }, sidang: { pemb: [], peng: [] }, bimbingan: [] });
+      if (!s.nama && e.nama) s.nama = e.nama;
+      s.entries.push(e);
+      if (e.type === "bimbingan") s.bimbingan.push(e.total);
+      else s[e.type][e.role === "Penguji" ? "peng" : "pemb"].push(e.total);
+    });
+    var rows = Object.keys(by).map(function (nim) {
+      var s = by[nim], notes = [];
+      ["seminar", "sidang"].forEach(function (t) {
+        var g = s[t];
+        g.avgPemb = avg(g.pemb); g.avgPeng = avg(g.peng);
+        if (g.avgPemb != null && g.avgPeng != null) g.nilai = (rules.pemb * g.avgPemb + rules.peng * g.avgPeng) / 100;
+        else {
+          g.nilai = null;
+          var miss = [];
+          if (g.avgPemb == null) miss.push("pembimbing");
+          if (g.avgPeng == null) miss.push("penguji");
+          notes.push(TYPES[t].short + ": belum ada nilai " + miss.join(" & "));
+        }
+      });
+      ["seminar", "sidang"].forEach(function (t) {
+        var ds = s.entries.filter(function (e) { return e.type === t; }).map(function (e) { return e.tgl; });
+        s[t].tgl = mode(ds);
+        var uniq = ds.filter(function (x, i) { return x && ds.indexOf(x) === i; });
+        if (uniq.length > 1) notes.push("Tanggal " + TYPES[t].short + " berbeda antar formulir (" + uniq.join(", ") + ")");
+      });
+      s.nilaiBimb = avg(s.bimbingan);
+      if (s.nilaiBimb == null) notes.push("Bimbingan: belum ada nilai");
+      s.akhir = (s.seminar.nilai != null && s.sidang.nilai != null && s.nilaiBimb != null)
+        ? (rules.sem * s.seminar.nilai + rules.sid * s.sidang.nilai + rules.bimb * s.nilaiBimb) / 100 : null;
+      if (s.entries.some(function (e) { return !e.signed; })) notes.push("Ada formulir belum ditandatangani");
+      s.notes = notes;
+      s.lengkap = s.akhir != null;
+      return s;
+    });
+    rows.sort(function (a, b) { return a.nim < b.nim ? -1 : a.nim > b.nim ? 1 : 0; });
+    return { rows: rows, replaced: replaced };
+  }
+
+  return { TYPES: TYPES, DEFAULT_RULES: DEFAULT_RULES, readPdf: readPdf, fromValues: fromValues,
+           aggregate: aggregate, r2: r2, num: num, normNim: normNim, parseTgl: parseTgl, tglKey: tglKey };
+})();
+if (typeof module !== "undefined") module.exports = RK;
+
+</script>
+<script>
+{
+/* ======================= KONFIGURASI (isi sekali) ======================= */
+const SUPABASE_URL = "https://xbswggqdjgxngjxmaryf.supabase.co";      // Project Settings -> API -> Project URL
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhic3dnZ3Fkamd4bmdqeG1hcnlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU1MjU2NTYsImV4cCI6MjExMTEwMTY1Nn0.doSbQSeB7RR_PbgT6_UpccqZyT9hQfDfcIkrm1E9uMw";           // Project Settings -> API -> anon public key
+const BUCKET = "berkas-ta";
+/* Tautan unduh formulir kosong (opsional): isi URL tempat file PDF form disimpan, mis. Google Drive */
+const TAUTAN_FORMULIR = { kartu_bimbingan: "", ceklist_seminar: "", surat_pendaftaran: "", ceklist_sidang: "" };
+/* ======================================================================= */
+
+const SYARAT = {
+  seminar: [
+    {key: "kartu_bimbingan", short: "Kartu Bimbingan", label: "Kartu Bimbingan", desc: "Minimal 6 kali bimbingan, disetujui (tanda tangan digital) dosen pembimbing.", types: ["pdf"]},
+    {key: "ceklist_seminar", short: "Cek List Seminar", label: "Cek List Seminar Proposal", desc: "Disetujui dosen pembimbing.", types: ["pdf"]},
+    {key: "surat_ijin", short: "Surat Ijin Data", label: "Surat Ijin Penggunaan Data dari Perusahaan", desc: "Bila memakai data perusahaan.", types: ["pdf"], optional: true},
+    {key: "manuskrip", short: "Manuskrip Proposal", label: "Manuskrip Proposal Tugas Akhir", desc: "", types: ["pdf"]},
+    {key: "presentasi", short: "Bahan Presentasi", label: "Bahan Presentasi", desc: "PDF atau PPT/PPTX, maksimal 10 MB.", types: ["pdf", "ppt", "pptx"], maxMB: 10}
+  ],
+  sidang: [
+    {key: "surat_pendaftaran", short: "Formulir Pendaftaran Sidang", label: "Formulir Pendaftaran Sidang", desc: "Ditandatangani dosen pembimbing dan dosen penguji seminar.", types: ["pdf"]},
+    {key: "kehadiran_seminar", short: "Bukti Kehadiran Seminar", label: "Bukti Kehadiran Seminar", desc: "Minimal 10x hadir dan 3x menjadi penanya (scan/foto, PDF/JPG/PNG).", types: ["pdf", "jpg", "jpeg", "png"]},
+    {key: "kartu_bimbingan", short: "Kartu Bimbingan", label: "Kartu Bimbingan", desc: "Minimal 9 kali bimbingan, disetujui dosen pembimbing.", types: ["pdf"]},
+    {key: "ceklist_sidang", short: "Cek List Sidang", label: "Cek List Sidang Skripsi", desc: "Disetujui dosen pembimbing.", types: ["pdf"]},
+    {key: "transkrip", short: "Transkrip Sementara", label: "Transkrip Sementara", desc: "Satu file untuk setiap mahasiswa.", types: ["pdf"], perMember: true},
+    {key: "presentasi", short: "Bahan Presentasi", label: "Bahan Presentasi Skripsi", desc: "PDF atau PPT/PPTX.", types: ["pdf", "ppt", "pptx"]},
+    {key: "artikel", short: "Artikel Ilmiah", label: "Artikel Ilmiah", desc: "Rangkuman dari naskah skripsi.", types: ["pdf"]},
+    {key: "plagiarisme", short: "Bukti Cek Plagiarisme", label: "Bukti Cek Plagiarisme (Turnitin)", desc: "Similarity maksimal 20%.", types: ["pdf"]},
+    {key: "naskah_final", short: "Naskah Skripsi Final", label: "Draft Naskah Skripsi Final Lengkap", desc: "Sesuai template final project STEM 2026.", types: ["pdf"]}
+  ]
+};
+const JENIS_LABEL = {seminar: "Seminar Proposal", sidang: "Sidang Skripsi"};
+const JENIS_ZIP = {seminar: "Seminar", sidang: "Sidang"};
+const STATUS = ["Menunggu verifikasi", "Perlu perbaikan", "Diterima", "Dijadwalkan", "Selesai", "Ditolak"];
+const STATUS_CLS = {"Menunggu verifikasi": "s-menunggu", "Perlu perbaikan": "s-perbaikan", "Diterima": "s-diterima", "Dijadwalkan": "s-dijadwalkan", "Selesai": "s-selesai", "Ditolak": "s-ditolak"};
+const MIME = {pdf: "application/pdf", ppt: "application/vnd.ms-powerpoint", pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation", jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png"};
+const HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+const BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+/* ---------- util ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const pad = n => String(n).padStart(2, "0");
+const tglPanjang = (iso, hari) => { if (!iso) return ""; const [y, m, d] = String(iso).slice(0, 10).split("-").map(Number); const dt = new Date(y, m - 1, d); return (hari ? HARI[dt.getDay()] + ", " : "") + d + " " + BULAN[m - 1] + " " + y; };
+const jam = t => t ? String(t).slice(0, 5).replace(":", ".") : "";
+const waktu = ts => { if (!ts) return ""; const d = new Date(ts); return `${d.getDate()} ${BULAN[d.getMonth()].slice(0, 3)} ${d.getFullYear()}, ${pad(d.getHours())}.${pad(d.getMinutes())}`; };
+const slug = s => String(s).normalize("NFKD").replace(/[^\w.\- ]+/g, "").trim().replace(/\s+/g, "_");
+const ext = name => (String(name).match(/\.([A-Za-z0-9]+)$/) || [, ""])[1].toLowerCase();
+const fmt2 = x => x == null ? "–" : (Math.round(x * 100) / 100).toFixed(2).replace(".", ",");
+const pill = s => `<span class="pill ${STATUS_CLS[s] || ""}">${esc(s)}</span>`;
+const toast = m => { const t = $("toast"); t.textContent = m; t.classList.add("on"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("on"), 2800); };
+const saveBlob = (blob, name) => { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500); };
+const msg = (el, kind, html) => { el.innerHTML = html ? `<div class="msg ${kind}">${html}</div>` : ""; };
+
+/* ---------- koneksi ---------- */
+const configured = !SUPABASE_URL.includes("XXXX") && !SUPABASE_ANON_KEY.startsWith("ISI_");
+const sb = window.SUPA_MOCK || (configured && window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null);
+if (!sb) $("cfgwarn").classList.remove("hide");
+
+let roster = [];            // roster_publik
+const kodeInfo = k => roster.find(r => r.kode === k);
+async function loadRoster() {
+  if (!sb) return;
+  const {data, error} = await sb.from("roster_publik").select("*").order("kode");
+  if (error) { $("kode").innerHTML = `<option value="">Gagal memuat daftar Kode</option>`; return; }
+  roster = data || [];
+  const opt = j => roster.filter(r => r.jenis === j).map(r => `<option value="${esc(r.kode)}">${esc(r.kode)} – ${esc(r.anggota.join(" & "))}</option>`).join("");
+  $("kode").innerHTML = `<option value="">Pilih Kode…</option><optgroup label="Kelompok">${opt("Kelompok")}</optgroup><optgroup label="Individu">${opt("Individu")}</optgroup>`;
+}
+
+/* =========================== PENDAFTARAN =========================== */
+let jenis = "seminar";
+const chosen = {};          // key or key#i -> File
+function reqItems() {
+  const info = kodeInfo($("kode").value), out = [];
+  SYARAT[jenis].forEach((r, i) => {
+    if (r.perMember && info && info.anggota.length > 1) info.anggota.forEach((nm, k) => out.push({...r, no: i + 1, slot: `${r.key}#${k}`, member: nm, memberIdx: k}));
+    else out.push({...r, no: i + 1, slot: r.key});
+  });
+  return out;
+}
+function renderReqs() {
+  $("reqtitle").textContent = "Syarat Pendaftaran " + JENIS_LABEL[jenis];
+  $("reqs").innerHTML = reqItems().map(r => {
+    const f = chosen[r.slot], link = TAUTAN_FORMULIR[r.key];
+    const err = f ? fileProblem(r, f) : "";
+    return `<div class="req">
+      <div class="no">${r.no}</div>
+      <div><div class="t">${esc(r.label)}${r.member ? " – " + esc(r.member) : ""}${r.optional ? '<span class="tag opt">opsional</span>' : '<span class="tag">wajib</span>'}</div>
+        <div class="d">${esc(r.desc)} ${link ? `<a href="${esc(link)}" target="_blank" rel="noopener">Unduh formulir</a>` : ""}</div></div>
+      <div class="pick"><button type="button" data-slot="${esc(r.slot)}">${f ? "Ganti file" : "Pilih file"}</button>
+        ${f ? `<span class="fn">${esc(f.name)} · ${(f.size / 1048576).toFixed(1)} MB</span>` : ""}${err ? `<span class="er">${esc(err)}</span>` : ""}</div>
+    </div>`;
+  }).join("");
+}
+function fileProblem(r, f) {
+  const e = ext(f.name);
+  if (!r.types.includes(e)) return `Format harus ${r.types.map(t => t.toUpperCase()).join("/")}.`;
+  const max = (r.maxMB || 25) * 1048576;
+  if (f.size > max) return `Ukuran melebihi ${r.maxMB || 25} MB.`;
+  if (!f.size) return "File kosong.";
+  return "";
+}
+$("reqs").addEventListener("click", e => {
+  const b = e.target.closest("button[data-slot]"); if (!b) return;
+  const r = reqItems().find(x => x.slot === b.dataset.slot);
+  const inp = document.createElement("input"); inp.type = "file"; inp.accept = r.types.map(t => "." + t).join(",");
+  inp.onchange = () => { if (inp.files[0]) { chosen[r.slot] = inp.files[0]; renderReqs(); } };
+  inp.click();
+});
+document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => {
+  jenis = b.dataset.j; document.querySelectorAll(".seg button").forEach(x => x.classList.toggle("on", x === b));
+  for (const k in chosen) delete chosen[k];
+  renderReqs(); msg($("sendmsg"), "", "");
+}));
+$("kode").addEventListener("change", () => {
+  const info = kodeInfo($("kode").value), box = $("kodeinfo");
+  if (!info) { box.classList.add("hide"); renderReqs(); return; }
+  box.classList.remove("hide");
+  box.innerHTML = `<b>${esc(info.kode)}</b> · ${esc(info.jenis)}<br>Anggota: ${esc(info.anggota.join(", "))}<br>Pembimbing: ${esc([info.pembimbing1, info.pembimbing2].filter(Boolean).join(" & "))}`;
+  for (const k in chosen) if (k.includes("#")) delete chosen[k];
+  renderReqs(); checkNim();
+});
+let nimOK = false;
+async function checkNim() {
+  const kode = $("kode").value, nim = $("nim").value.replace(/\s/g, "");
+  nimOK = false; $("nimmsg").textContent = "";
+  if (!kode || !nim || !sb) return false;
+  const {data, error} = await sb.rpc("cek_nim", {p_kode: kode, p_nim: nim});
+  nimOK = !error && data === true;
+  $("nimmsg").textContent = nimOK ? "NIM cocok dengan Kode." : "NIM tidak terdaftar pada Kode ini.";
+  $("nimmsg").style.color = nimOK ? "var(--teal)" : "var(--red)";
+  return nimOK;
+}
+$("nim").addEventListener("change", checkNim);
+
+function fileName(r, kode, e, nim) {   // nama file otomatis
+  const memb = r.member ? "_" + r.member.split(" ")[0] : "";
+  return { display: `${pad(r.no)} ${r.short}${memb}_${kode}.${e}`, key: `${pad(r.no)}_${slug(r.short + memb)}_${slug(kode)}.${e}` };
+}
+$("fdaftar").addEventListener("submit", async e => {
+  e.preventDefault();
+  const out = $("sendmsg");
+  if (!sb) { msg(out, "err", "Portal belum terhubung ke database."); return; }
+  const kode = $("kode").value, nim = $("nim").value.replace(/\s/g, ""), email = $("email").value.trim(), judul = $("judul").value.trim();
+  const errs = [];
+  if (!kode) errs.push("Pilih Kode Kelompok/Individu.");
+  if (!nim) errs.push("Isi NIM.");
+  if (!email || !/^\S+@\S+\.\S+$/.test(email)) errs.push("Isi email yang valid.");
+  if (!judul) errs.push("Isi judul tugas akhir.");
+  const items = reqItems();
+  items.forEach(r => { const f = chosen[r.slot]; if (!f && !r.optional) errs.push(`Unggah: ${r.label}${r.member ? " – " + r.member : ""}.`); else if (f && fileProblem(r, f)) errs.push(`${r.label}: ${fileProblem(r, f)}`); });
+  if (!errs.length && !(await checkNim())) errs.push("NIM tidak terdaftar pada Kode yang dipilih.");
+  if (errs.length) { msg(out, "err", "<b>Belum bisa dikirim:</b><br>" + errs.map(esc).join("<br>")); return; }
+
+  const id = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(16) + Math.random().toString(16).slice(2));
+  const base = `${jenis}/${slug(kode)}/${id}`;
+  const files = items.filter(r => chosen[r.slot]);
+  const berkas = [];
+  $("kirim").disabled = true; $("prog").classList.remove("hide");
+  try {
+    for (let i = 0; i < files.length; i++) {
+      const r = files[i], f = chosen[r.slot], e2 = ext(f.name), nm = fileName(r, kode, e2);
+      $("kirimnote").textContent = `Mengunggah ${i + 1}/${files.length}: ${r.short}…`;
+      const path = `${base}/${nm.key}`;
+      const {error} = await sb.storage.from(BUCKET).upload(path, f, {contentType: f.type || MIME[e2], upsert: false});
+      if (error) throw new Error(`Gagal mengunggah ${r.label}: ${error.message}`);
+      berkas.push({key: r.key, no: r.no, label: r.label + (r.member ? " – " + r.member : ""), path, nama_file: nm.display, nama_asli: f.name, size: f.size});
+      $("prog").firstElementChild.style.width = Math.round((i + 1) / files.length * 100) + "%";
+    }
+    $("kirimnote").textContent = "Menyimpan pendaftaran…";
+    const {error} = await sb.from("pendaftaran").insert({id, jenis, kode, nim_pendaftar: nim, email, no_hp: $("hp").value.trim() || null, judul, berkas});
+    if (error) throw new Error("Gagal menyimpan pendaftaran: " + error.message);
+    msg(out, "ok", `<b>Pendaftaran ${esc(JENIS_LABEL[jenis])} ${esc(kode)} terkirim.</b> ${berkas.length} berkas diterima. Pantau status dan jadwal di menu <a href="#status">Status &amp; Jadwal</a>.`);
+    for (const k in chosen) delete chosen[k];
+    $("judul").value = ""; renderReqs();
+    out.scrollIntoView({behavior: "smooth", block: "center"});
+  } catch (err) {
+    msg(out, "err", esc(err.message) + "<br>Silakan coba kirim lagi.");
+  } finally {
+    $("kirim").disabled = false; $("kirimnote").textContent = "";
+    setTimeout(() => { $("prog").classList.add("hide"); $("prog").firstElementChild.style.width = "0"; }, 800);
+  }
+});
+
+/* =========================== STATUS (publik) =========================== */
+let stJenis = "seminar", statusRows = [];
+async function loadStatus() {
+  if (!sb) return;
+  const {data, error} = await sb.from("status_publik").select("*");
+  statusRows = error ? [] : (data || []);
+  renderStatus();
+}
+function agendaHTML(rows, admin) {
+  const sch = rows.filter(r => r.jadwal_tanggal).sort((a, b) => (a.jadwal_tanggal + (a.jadwal_mulai || "")).localeCompare(b.jadwal_tanggal + (b.jadwal_mulai || "")));
+  if (!sch.length) return `<div class="card note">Belum ada jadwal yang ditetapkan.</div>`;
+  const days = {};
+  sch.forEach(r => (days[r.jadwal_tanggal] = days[r.jadwal_tanggal] || []).push(r));
+  return Object.keys(days).map(d => `<div class="day"><h3>${esc(tglPanjang(d, true))}</h3>${days[d].map(r => {
+    const info = kodeInfo(r.kode) || {anggota: []};
+    return `<div class="slot"><div class="jam">${esc(jam(r.jadwal_mulai))}${r.jadwal_selesai ? "–" + esc(jam(r.jadwal_selesai)) : ""}</div>
+      <div><b>${esc(r.kode)}</b> · ${esc(info.anggota.join(", "))}${admin ? ` <span class="note">(${esc(JENIS_LABEL[r.jenis])})</span>` : ""}<br>
+      <span class="note">${esc([r.moda, r.ruang].filter(Boolean).join(" · "))}${r.penguji ? " · Penguji: " + esc(r.penguji) : ""}</span>
+      ${r.judul ? `<div class="note" style="margin-top:2px">${esc(r.judul)}</div>` : ""}</div></div>`;
+  }).join("")}</div>`).join("");
+}
+function renderStatus() {
+  const q = $("scari").value.trim().toLowerCase();
+  const rows = statusRows.filter(r => r.jenis === stJenis).filter(r => {
+    if (!q) return true;
+    const info = kodeInfo(r.kode) || {anggota: []};
+    return (r.kode + " " + info.anggota.join(" ")).toLowerCase().includes(q);
+  }).sort((a, b) => a.kode.localeCompare(b.kode));
+  $("agenda").innerHTML = agendaHTML(rows, false);
+  $("sbody").innerHTML = rows.length ? rows.map(r => {
+    const info = kodeInfo(r.kode) || {anggota: []};
+    return `<tr><td data-l="Kode"><b>${esc(r.kode)}</b></td><td data-l="Anggota">${esc(info.anggota.join(", "))}</td><td data-l="Status">${pill(r.status)}</td><td data-l="Catatan">${esc(r.catatan_admin || "")}</td><td data-l="Didaftarkan">${esc(waktu(r.created_at))}</td></tr>`;
+  }).join("") : `<tr><td colspan="5" class="note">Belum ada pendaftaran ${esc(JENIS_LABEL[stJenis])}.</td></tr>`;
+}
+$("stabs").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; stJenis = b.dataset.t; document.querySelectorAll("#stabs button").forEach(x => x.classList.toggle("on", x === b)); renderStatus(); });
+$("scari").addEventListener("input", renderStatus);
+
+/* =========================== ADMIN =========================== */
+let session = null, pend = [], anggotaAll = [], nilaiRows = [], bobot = {...RK.DEFAULT_RULES}, parsed = [];
+const nimInfo = nim => anggotaAll.find(a => a.nim === nim);
+async function refreshSession() {
+  if (!sb) return;
+  const {data} = await sb.auth.getSession();
+  session = data && data.session;
+  $("alogin").classList.toggle("hide", !!session);
+  $("apanel").classList.toggle("hide", !session);
+  if (session) { $("awho").textContent = session.user && session.user.email || ""; await loadAdmin(); }
+}
+$("flogin").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!sb) return;
+  const {error} = await sb.auth.signInWithPassword({email: $("lemail").value.trim(), password: $("lpass").value});
+  if (error) { msg($("lmsg"), "err", "Email atau kata sandi salah."); return; }
+  msg($("lmsg"), "", ""); $("lpass").value = ""; await refreshSession();
+});
+$("logout").addEventListener("click", async () => { await sb.auth.signOut(); session = null; await refreshSession(); });
+$("atabs").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  document.querySelectorAll("#atabs button").forEach(x => x.classList.toggle("on", x === b));
+  ["pend", "jadwal", "nilai", "roster"].forEach(t => $("t-" + t).classList.toggle("hide", t !== b.dataset.t));
+});
+async function loadAdmin() {
+  const [p, a, n, s] = await Promise.all([
+    sb.from("pendaftaran").select("*").order("created_at", {ascending: false}),
+    sb.from("roster_anggota").select("*").order("kode"),
+    sb.from("nilai_form").select("*").order("created_at", {ascending: false}),
+    sb.from("pengaturan").select("*")
+  ]);
+  if (p.error) { toast("Gagal memuat data: " + p.error.message); return; }
+  pend = p.data || []; anggotaAll = a.data || []; nilaiRows = n.data || [];
+  const b = (s.data || []).find(x => x.kunci === "bobot"); if (b) bobot = {...RK.DEFAULT_RULES, ...b.nilai};
+  $("mnim").innerHTML = anggotaAll.slice().sort((x, y) => x.nim.localeCompare(y.nim)).map(x => `<option value="${esc(x.nim)}">${esc(x.nim)} – ${esc(x.nama)} (${esc(x.kode)})</option>`).join("");
+  renderPend(); renderJadwal(); renderNilai(); renderRoster();
+}
+const latestOnly = rows => { const seen = new Set(); return rows.filter(r => { const k = r.jenis + "|" + r.kode; if (seen.has(k)) return false; seen.add(k); return true; }); };
+function filteredPend() {
+  const j = $("pjenis").value, st = $("pstatus").value, q = $("pcari").value.trim().toLowerCase();
+  let rows = $("priwayat").checked ? pend : latestOnly(pend);
+  return rows.filter(r => (!j || r.jenis === j) && (!st || r.status === st) && (!q || (r.kode + " " + ((kodeInfo(r.kode) || {anggota: []}).anggota.join(" ")) + " " + r.judul).toLowerCase().includes(q)));
+}
+function renderPend() {
+  const latest = latestOnly(pend);
+  const cnt = s => latest.filter(r => r.status === s).length;
+  $("pstats").innerHTML = [["Pendaftaran aktif", latest.length], ["Menunggu verifikasi", cnt("Menunggu verifikasi")], ["Perlu perbaikan", cnt("Perlu perbaikan")], ["Dijadwalkan", cnt("Dijadwalkan")], ["Selesai", cnt("Selesai")]]
+    .map(([l, v]) => `<div class="stat"><b>${v}</b><span>${esc(l)}</span></div>`).join("");
+  const rows = filteredPend();
+  $("pbody").innerHTML = rows.length ? rows.map(r => {
+    const info = kodeInfo(r.kode) || {anggota: []};
+    return `<tr class="click" data-id="${esc(r.id)}"><td><input type="checkbox" class="psel" value="${esc(r.id)}" style="width:auto;min-height:0" aria-label="Pilih"></td>
+      <td>${esc(waktu(r.created_at))}</td><td>${esc(JENIS_ZIP[r.jenis])}</td><td><b>${esc(r.kode)}</b></td><td>${esc(info.anggota.join(", "))}</td>
+      <td>${esc(r.judul)}</td><td class="n">${(r.berkas || []).length}</td><td>${pill(r.status)}</td>
+      <td>${r.jadwal_tanggal ? esc(tglPanjang(r.jadwal_tanggal)) + " " + esc(jam(r.jadwal_mulai)) : "–"}</td></tr>`;
+  }).join("") : `<tr><td colspan="9" class="note">Tidak ada pendaftaran.</td></tr>`;
+}
+$("pstatus").innerHTML = `<option value="">Semua status</option>` + STATUS.map(s => `<option>${esc(s)}</option>`).join("");
+["pjenis", "pstatus", "priwayat"].forEach(id => $(id).addEventListener("change", renderPend));
+$("pcari").addEventListener("input", renderPend);
+$("prefresh").addEventListener("click", loadAdmin);
+$("pall").addEventListener("change", e => document.querySelectorAll(".psel").forEach(c => c.checked = e.target.checked));
+$("pbody").addEventListener("click", e => {
+  if (e.target.closest("input")) return;
+  const tr = e.target.closest("tr[data-id]"); if (tr) openDetail(tr.dataset.id);
+});
+
+/* ---- detail, verifikasi, jadwal ---- */
+const namaKunci = n => String(n || "").split(",")[0].replace(/^\s*(dr|prof)\.?\s+/i, "").trim().toLowerCase();
+const daftarNama = s => String(s || "").split(/;|\n| & | dan /).map(x => x.trim()).filter(Boolean);
+function bentrok(r, f) {
+  if (!f.jadwal_tanggal || !f.jadwal_mulai) return [];
+  const s1 = f.jadwal_mulai, e1 = f.jadwal_selesai || f.jadwal_mulai, out = [];
+  const info = kodeInfo(r.kode) || {};
+  const orang = new Map([info.pembimbing1, info.pembimbing2, ...daftarNama(f.penguji)].filter(Boolean).map(x => [namaKunci(x), x.trim()]));
+  latestOnly(pend).forEach(o => {
+    if (o.id === r.id || o.jadwal_tanggal !== f.jadwal_tanggal || !o.jadwal_mulai) return;
+    const s2 = o.jadwal_mulai.slice(0, 5), e2 = (o.jadwal_selesai || o.jadwal_mulai).slice(0, 5);
+    if (!(s1 < e2 && s2 < e1)) return;
+    if (f.ruang && o.ruang && f.ruang.trim().toLowerCase() === o.ruang.trim().toLowerCase()) out.push(`Ruang ${o.ruang} dipakai ${o.kode} (${jam(o.jadwal_mulai)}–${jam(o.jadwal_selesai)}).`);
+    const oi = kodeInfo(o.kode) || {};
+    [oi.pembimbing1, oi.pembimbing2, ...daftarNama(o.penguji)].filter(Boolean).forEach(p => {
+      if (orang.has(namaKunci(p))) out.push(`${orang.get(namaKunci(p))} juga terjadwal di ${o.kode} pada jam yang sama.`);
+    });
+  });
+  return [...new Set(out)];
+}
+function openDetail(id) {
+  const r = pend.find(x => x.id === id); if (!r) return;
+  const info = kodeInfo(r.kode) || {anggota: []};
+  $("dtitle").textContent = `${JENIS_LABEL[r.jenis]} · ${r.kode}`;
+  $("dsub").textContent = `Didaftarkan ${waktu(r.created_at)} oleh NIM ${r.nim_pendaftar}`;
+  $("dbody").innerHTML = `
+    <div class="grid2">
+      <div>
+        <h3>Data</h3>
+        <p style="margin:0 0 6px"><b>Anggota:</b> ${esc(info.anggota.join(", "))}<br><b>Pembimbing:</b> ${esc([info.pembimbing1, info.pembimbing2].filter(Boolean).join(" & "))}<br>
+        <b>Judul:</b> ${esc(r.judul)}<br><b>Kontak:</b> ${esc(r.email || "–")}${r.no_hp ? " · " + esc(r.no_hp) : ""}</p>
+        <h3 style="margin-top:12px">Berkas (${(r.berkas || []).length})</h3>
+        <ul class="files">${(r.berkas || []).map((b, i) => `<li><span>${esc(b.nama_file)}<br><span class="note">${esc(b.label)} · ${(b.size / 1048576).toFixed(1)} MB</span></span><button class="ghost" data-open="${i}">Lihat</button></li>`).join("")}</ul>
+        <div class="row" style="margin-top:10px"><button class="pri" id="dzip">Unduh semua (.zip)</button></div>
+      </div>
+      <div>
+        <h3>Status</h3>
+        <label class="f">Status<select id="dstatus">${STATUS.map(s => `<option ${s === r.status ? "selected" : ""}>${esc(s)}</option>`).join("")}</select></label>
+        <label class="f">Catatan untuk mahasiswa <small>Tampil di halaman Status</small><textarea id="dcat">${esc(r.catatan_admin || "")}</textarea></label>
+        <h3>Jadwal</h3>
+        <label class="f">Tanggal<input type="date" id="dtgl" value="${esc(r.jadwal_tanggal || "")}"></label>
+        <div class="grid2" style="gap:10px">
+          <label class="f">Mulai<input type="time" id="dmulai" value="${esc((r.jadwal_mulai || "").slice(0, 5))}"></label>
+          <label class="f">Selesai<input type="time" id="dselesai" value="${esc((r.jadwal_selesai || "").slice(0, 5))}"></label>
+        </div>
+        <div class="grid2" style="gap:10px">
+          <label class="f">Moda<select id="dmoda">${["", "Offline", "Hybrid", "Online"].map(m => `<option ${m === (r.moda || "") ? "selected" : ""}>${esc(m)}</option>`).join("")}</select></label>
+          <label class="f">Ruang<input id="druang" value="${esc(r.ruang || "")}" placeholder="R. 304 Gd. Eka"></label>
+        </div>
+        <label class="f">Dosen penguji <small>Lebih dari satu? Pisahkan dengan titik koma ( ; )</small><input id="dpenguji" value="${esc(r.penguji || "")}"></label>
+        <div id="dwarn" class="warn"></div>
+        <div id="dmsg"></div>
+        <div class="row"><button class="pri" id="dsave">Simpan</button><button class="danger" id="ddel">Hapus pendaftaran</button></div>
+      </div>
+    </div>`;
+  const form = () => ({status: $("dstatus").value, catatan_admin: $("dcat").value.trim() || null, jadwal_tanggal: $("dtgl").value || null,
+    jadwal_mulai: $("dmulai").value || null, jadwal_selesai: $("dselesai").value || null, moda: $("dmoda").value || null,
+    ruang: $("druang").value.trim() || null, penguji: $("dpenguji").value.trim() || null});
+  const warn = () => { const w = bentrok(r, form()); $("dwarn").innerHTML = w.length ? "Perhatian, jadwal bentrok:<br>" + w.map(esc).join("<br>") : ""; };
+  ["dtgl", "dmulai", "dselesai", "druang", "dpenguji"].forEach(i => $(i).addEventListener("input", warn)); warn();
+  $("dtgl").addEventListener("change", () => { if ($("dtgl").value && $("dstatus").value !== "Selesai") $("dstatus").value = "Dijadwalkan"; });
+  $("dsave").onclick = async () => {
+    const f = form();
+    if (f.jadwal_mulai && f.jadwal_selesai && f.jadwal_selesai <= f.jadwal_mulai) { msg($("dmsg"), "err", "Jam selesai harus setelah jam mulai."); return; }
+    const {error} = await sb.from("pendaftaran").update(f).eq("id", r.id);
+    if (error) { msg($("dmsg"), "err", esc(error.message)); return; }
+    Object.assign(r, f); renderPend(); renderJadwal(); toast("Tersimpan."); $("dlg").close();
+  };
+  $("ddel").onclick = async () => {
+    if (!confirm(`Hapus pendaftaran ${r.kode} (${JENIS_ZIP[r.jenis]}) beserta berkasnya?`)) return;
+    const paths = (r.berkas || []).map(b => b.path);
+    if (paths.length) await sb.storage.from(BUCKET).remove(paths);
+    const {error} = await sb.from("pendaftaran").delete().eq("id", r.id);
+    if (error) { msg($("dmsg"), "err", esc(error.message)); return; }
+    pend = pend.filter(x => x.id !== r.id); renderPend(); renderJadwal(); $("dlg").close(); toast("Pendaftaran dihapus.");
+  };
+  $("dbody").querySelectorAll("button[data-open]").forEach(b => b.onclick = async () => {
+    const bk = r.berkas[+b.dataset.open];
+    const {data, error} = await sb.storage.from(BUCKET).createSignedUrl(bk.path, 600);
+    if (error) { toast("Gagal membuka berkas."); return; }
+    window.open(data.signedUrl, "_blank", "noopener");
+  });
+  $("dzip").onclick = () => zipRegs([r]);
+  $("dlg").showModal();
+}
+$("dclose").addEventListener("click", () => $("dlg").close());
+
+const zipName = r => `Berkas ${JENIS_ZIP[r.jenis]}_${r.kode}`;
+async function zipRegs(regs) {
+  if (!regs.length) { toast("Pilih pendaftaran terlebih dahulu."); return; }
+  const zip = new JSZip(), single = regs.length === 1;
+  let n = 0, total = regs.reduce((s, r) => s + (r.berkas || []).length, 0), fail = 0;
+  for (const r of regs) {
+    const folder = single ? zip : zip.folder(zipName(r));
+    for (const b of r.berkas || []) {
+      toast(`Menyiapkan .zip… ${++n}/${total}`);
+      const {data, error} = await sb.storage.from(BUCKET).download(b.path);
+      if (error || !data) { fail++; continue; }
+      folder.file(b.nama_file, data);
+    }
+  }
+  const blob = await zip.generateAsync({type: "blob"});
+  saveBlob(blob, single ? zipName(regs[0]) + ".zip" : `Berkas TA_${regs.length} pendaftaran.zip`);
+  toast(fail ? `Selesai, ${fail} berkas gagal diunduh.` : "File .zip siap.");
+}
+$("pzip").addEventListener("click", () => zipRegs([...document.querySelectorAll(".psel:checked")].map(c => pend.find(r => r.id === c.value)).filter(Boolean)));
+
+/* ---- jadwal ---- */
+function renderJadwal() {
+  const j = $("jjenis").value;
+  $("jagenda").innerHTML = agendaHTML(latestOnly(pend).filter(r => !j || r.jenis === j), true);
+}
+$("jjenis").addEventListener("change", renderJadwal);
+$("jxlsx").addEventListener("click", () => {
+  const rows = latestOnly(pend).filter(r => r.jadwal_tanggal && (!$("jjenis").value || r.jenis === $("jjenis").value))
+    .sort((a, b) => (a.jadwal_tanggal + a.jadwal_mulai).localeCompare(b.jadwal_tanggal + b.jadwal_mulai));
+  const aoa = [["Jenis", "Kode", "Anggota", "Judul", "Hari, Tanggal", "Mulai", "Selesai", "Moda", "Ruang", "Pembimbing", "Penguji"]].concat(rows.map(r => {
+    const i = kodeInfo(r.kode) || {anggota: []};
+    return [JENIS_LABEL[r.jenis], r.kode, i.anggota.join(", "), r.judul, tglPanjang(r.jadwal_tanggal, true), jam(r.jadwal_mulai), jam(r.jadwal_selesai), r.moda || "", r.ruang || "", [i.pembimbing1, i.pembimbing2].filter(Boolean).join(" & "), r.penguji || ""];
+  }));
+  const wb = XLSX.utils.book_new(), ws = XLSX.utils.aoa_to_sheet(aoa);
+  ws["!cols"] = [14, 9, 40, 50, 26, 8, 8, 9, 16, 40, 40].map(w => ({wch: w}));
+  XLSX.utils.book_append_sheet(wb, ws, "Jadwal");
+  saveBlob(new Blob([XLSX.write(wb, {bookType: "xlsx", type: "array"})]), "Jadwal Seminar & Sidang TA.xlsx");
+});
+
+/* ---- nilai & rekap ---- */
+const isoFromDmy = t => { const p = String(t || "").split("/"); return p.length === 3 ? `${p[2]}-${p[1]}-${p[0]}` : null; };
+const dmyFromIso = t => { const p = String(t || "").slice(0, 10).split("-"); return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : ""; };
+function recordsFromRows() {
+  return nilaiRows.map(n => ({file: n.nama_file || "manual", type: n.jenis, role: n.peran, penilai: n.penilai, signed: n.ditandatangani !== false,
+    tgl: dmyFromIso(n.tanggal), problems: [], sigs: [], students: [{nim: n.nim, nama: n.nama || (nimInfo(n.nim) || {}).nama || "", total: Number(n.total)}]}));
+}
+function renderNilai() {
+  $("fx1").textContent = `${bobot.pemb}% rata-rata pembimbing + ${bobot.peng}% rata-rata penguji`;
+  $("fx2").textContent = `${bobot.sem}% Seminar (UTS) + ${bobot.sid}% Sidang (UAS) + ${bobot.bimb}% Bimbingan`;
+  const agg = RK.aggregate(recordsFromRows(), bobot);
+  $("rbody").innerHTML = agg.rows.length ? agg.rows.map(s => {
+    const a = nimInfo(s.nim) || {};
+    return `<tr><td>${esc(a.kode || "–")}</td><td>${esc(s.nim)}</td><td>${esc(a.nama || s.nama)}</td><td class="n">${esc(s.seminar.tgl || "–")}</td><td class="n">${fmt2(s.seminar.nilai)}</td>
+      <td class="n">${esc(s.sidang.tgl || "–")}</td><td class="n">${fmt2(s.sidang.nilai)}</td><td class="n">${fmt2(s.nilaiBimb)}</td><td class="n"><b>${fmt2(s.akhir)}</b></td><td class="note">${esc(s.notes.join("; "))}</td></tr>`;
+  }).join("") : `<tr><td colspan="10" class="note">Belum ada nilai.</td></tr>`;
+  const q = $("ncari").value.trim().toLowerCase();
+  $("nbody").innerHTML = nilaiRows.filter(n => !q || [n.nim, n.nama, n.penilai].join(" ").toLowerCase().includes(q)).map(n => `<tr>
+    <td>${esc(RK.TYPES[n.jenis].short)}</td><td>${esc(n.peran)}</td><td>${esc(n.penilai)}</td><td>${esc(n.nim)}</td><td>${esc(n.nama || (nimInfo(n.nim) || {}).nama || "")}</td>
+    <td class="n">${fmt2(Number(n.total))}</td><td class="n">${esc(dmyFromIso(n.tanggal))}</td><td>${esc(n.sumber === "pdf" ? "PDF" : "Manual")}</td>
+    <td><button class="ghost danger" data-del="${esc(n.id)}" style="min-height:32px">Hapus</button></td></tr>`).join("") || `<tr><td colspan="9" class="note">Belum ada data.</td></tr>`;
+  $("bobotbox").innerHTML = ["pemb", "peng", "sem", "sid", "bimb"].map(k => `<label class="f" style="margin:0;max-width:130px">${({pemb: "Pembimbing %", peng: "Penguji %", sem: "Seminar %", sid: "Sidang %", bimb: "Bimbingan %"})[k]}<input data-b="${k}" type="number" value="${esc(bobot[k])}"></label>`).join("") + `<button id="bsave" class="pri" style="align-self:end">Simpan bobot</button>`;
+  $("bsave").onclick = async () => {
+    const nb = {...bobot}; $("bobotbox").querySelectorAll("input[data-b]").forEach(i => nb[i.dataset.b] = Number(i.value) || 0);
+    if (nb.pemb + nb.peng !== 100 || nb.sem + nb.sid + nb.bimb !== 100) { toast("Jumlah bobot harus 100%."); return; }
+    const {error} = await sb.from("pengaturan").upsert({kunci: "bobot", nilai: nb});
+    if (error) { toast(error.message); return; }
+    bobot = nb; renderNilai(); toast("Bobot disimpan.");
+  };
+}
+$("nbobot").addEventListener("click", () => $("bobotbox").classList.toggle("hide"));
+$("ncari").addEventListener("input", renderNilai);
+$("nbody").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-del]"); if (!b) return;
+  if (!confirm("Hapus nilai ini?")) return;
+  const {error} = await sb.from("nilai_form").delete().eq("id", b.dataset.del);
+  if (error) { toast(error.message); return; }
+  nilaiRows = nilaiRows.filter(n => n.id !== b.dataset.del); renderNilai();
+});
+async function upsertNilai(rows) {
+  const {error} = await sb.from("nilai_form").upsert(rows, {onConflict: "jenis,peran,penilai_key,nim"});
+  if (error) throw error;
+  const {data} = await sb.from("nilai_form").select("*").order("created_at", {ascending: false});
+  nilaiRows = data || nilaiRows; renderNilai();
+}
+async function parseNilaiFiles(list) {
+  const pdfs = [...list].filter(f => /\.pdf$/i.test(f.name));
+  parsed = [];
+  for (const f of pdfs) parsed.push(await RK.readPdf(PDFLib, await f.arrayBuffer(), f.name));
+  const ok = parsed.filter(r => !r.error && r.role);
+  $("nparse").innerHTML = `<table style="margin-top:10px"><thead><tr><th>File</th><th>Jenis/Peran</th><th>Mahasiswa</th><th>Catatan</th></tr></thead><tbody>${parsed.map(r => r.error
+    ? `<tr><td>${esc(r.file)}</td><td colspan="2"></td><td class="note" style="color:var(--red)">${esc(r.error)}</td></tr>`
+    : `<tr><td>${esc(r.file)}</td><td>${esc(RK.TYPES[r.type].short)} · ${esc(r.role || "–")}<br><span class="note">${esc(r.penilai)} ${esc(r.tgl || "")}</span></td>
+       <td>${r.students.map(s => `${esc(s.nim)} ${esc(s.nama)} <b>${fmt2(s.total)}</b>${s.nim && !nimInfo(s.nim) ? ' <span class="warn">(NIM tidak ada di data Kode)</span>' : ""}`).join("<br>")}</td>
+       <td class="note">${esc(r.problems.join("; "))}</td></tr>`).join("")}</tbody></table>
+    <div class="row" style="margin-top:10px"><button class="pri" id="nsave" ${ok.length ? "" : "disabled"}>Simpan ${ok.length} formulir ke database</button><span class="note">Formulir tanpa peran atau tidak terbaca dilewati.</span></div>`;
+  const b = $("nsave");
+  if (b) b.onclick = async () => {
+    const rows = [];
+    ok.forEach(r => r.students.forEach(s => { if (s.nim && s.total != null) rows.push({jenis: r.type, peran: r.role, penilai: r.penilai || "", nim: s.nim, nama: s.nama || (nimInfo(s.nim) || {}).nama || null,
+      skor: s.scores, total: Math.round(s.total * 100) / 100, tanggal: isoFromDmy(r.tgl), sumber: "pdf", nama_file: r.file, ditandatangani: r.signed}); }));
+    try { await upsertNilai(rows); toast(`${rows.length} nilai disimpan.`); $("nparse").innerHTML = ""; }
+    catch (err) { toast("Gagal menyimpan: " + err.message); }
+  };
+}
+const nd = $("ndrop");
+["dragenter", "dragover"].forEach(ev => nd.addEventListener(ev, e => { e.preventDefault(); nd.classList.add("over"); }));
+["dragleave", "drop"].forEach(ev => nd.addEventListener(ev, e => { e.preventDefault(); nd.classList.remove("over"); }));
+nd.addEventListener("drop", e => parseNilaiFiles(e.dataTransfer.files));
+$("nfiles").addEventListener("change", e => { parseNilaiFiles(e.target.files); e.target.value = ""; });
+$("mjenis").addEventListener("change", () => { const bim = $("mjenis").value === "bimbingan"; $("mperan").value = bim ? "Pembimbing" : $("mperan").value; $("mperan").disabled = bim; });
+$("msave").addEventListener("click", async () => {
+  const total = RK.num($("mtotal").value), nim = $("mnim").value, a = nimInfo(nim) || {};
+  if (isNaN(total) || total < 0 || total > 100) { msg($("mmsg"), "err", "Nilai total harus 0–100."); return; }
+  if (!$("mpenilai").value.trim()) { msg($("mmsg"), "err", "Isi nama penilai."); return; }
+  try {
+    await upsertNilai([{jenis: $("mjenis").value, peran: $("mjenis").value === "bimbingan" ? "Pembimbing" : $("mperan").value, penilai: $("mpenilai").value.trim(),
+      nim, nama: a.nama || null, total: Math.round(total * 100) / 100, tanggal: $("mtgl").value || null, sumber: "manual"}]);
+    msg($("mmsg"), "ok", "Nilai tersimpan."); $("mtotal").value = "";
+  } catch (err) { msg($("mmsg"), "err", esc(err.message)); }
+});
+$("nxlsx").addEventListener("click", () => {
+  const agg = RK.aggregate(recordsFromRows(), bobot), r2 = RK.r2;
+  const d = t => { const p = String(t || "").split("/"); return p.length === 3 ? new Date(+p[2], +p[1] - 1, +p[0]) : null; };
+  const head = ["Kode", "NIM", "Nama", "Tanggal Seminar", "Seminar - rata Pembimbing", "Seminar - rata Penguji", "Nilai Seminar (UTS)", "Tanggal Sidang", "Sidang - rata Pembimbing", "Sidang - rata Penguji", "Nilai Sidang (UAS)", "Nilai Bimbingan", "Nilai Akhir", "Catatan"];
+  const body = agg.rows.map(s => { const a = nimInfo(s.nim) || {}; return [a.kode || "", s.nim, a.nama || s.nama, d(s.seminar.tgl), r2(s.seminar.avgPemb), r2(s.seminar.avgPeng), r2(s.seminar.nilai), d(s.sidang.tgl), r2(s.sidang.avgPemb), r2(s.sidang.avgPeng), r2(s.sidang.nilai), r2(s.nilaiBimb), r2(s.akhir), s.notes.join("; ")]; })
+    .sort((x, y) => String(x[0]).localeCompare(String(y[0])) || String(x[1]).localeCompare(String(y[1])));
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet([head, ...body], {cellDates: true, dateNF: "dd/mm/yyyy"});
+  ws["!cols"] = head.map((h, i) => ({wch: i === 2 ? 30 : i === 13 ? 50 : Math.max(10, h.length + 2)}));
+  XLSX.utils.book_append_sheet(wb, ws, "Rekap");
+  const dh = ["Jenis", "Peran", "Penilai", "NIM", "Nama", "Nilai Total", "Tanggal", "Sumber", "File", "Ditandatangani"];
+  const ws2 = XLSX.utils.aoa_to_sheet([dh, ...nilaiRows.map(n => [RK.TYPES[n.jenis].label, n.peran, n.penilai, n.nim, n.nama || (nimInfo(n.nim) || {}).nama || "", Number(n.total), n.tanggal ? new Date(n.tanggal + "T00:00") : null, n.sumber, n.nama_file || "", n.ditandatangani === false ? "Belum" : "Ya"])], {cellDates: true, dateNF: "dd/mm/yyyy"});
+  XLSX.utils.book_append_sheet(wb, ws2, "Detail Nilai");
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([["Aturan", "Bobot (%)"], ["Pembimbing", bobot.pemb], ["Penguji", bobot.peng], ["UTS = Seminar Proposal", bobot.sem], ["UAS = Sidang Skripsi", bobot.sid], ["Proses Bimbingan", bobot.bimb]]), "Aturan");
+  saveBlob(new Blob([XLSX.write(wb, {bookType: "xlsx", type: "array"})]), "Rekap Nilai Tugas Akhir.xlsx");
+});
+
+/* ---- data kode ---- */
+function renderRoster() {
+  $("rsbody").innerHTML = roster.map(r => `<tr><td><b>${esc(r.kode)}</b></td><td>${anggotaAll.filter(a => a.kode === r.kode).map(a => `${esc(a.nama)} <span class="note">(${esc(a.nim)})</span>`).join("<br>")}</td><td>${esc(r.pembimbing1)}</td><td>${esc(r.pembimbing2 || "")}</td></tr>`).join("");
+}
+
+/* =========================== ROUTER =========================== */
+function route() {
+  const v = (location.hash.replace("#", "") || "daftar");
+  const view = ["daftar", "status", "admin"].includes(v) ? v : "daftar";
+  document.querySelectorAll(".view").forEach(s => s.classList.toggle("hide", s.id !== "v-" + view));
+  document.querySelectorAll("nav a").forEach(a => a.classList.toggle("on", a.dataset.v === view));
+  if (view === "status") loadStatus();
+  if (view === "admin") refreshSession();
+}
+window.addEventListener("hashchange", route);
+renderReqs();
+loadRoster().then(route);
+}
+</script>
+</body>
+</html>
