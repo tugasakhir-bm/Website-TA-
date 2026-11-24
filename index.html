@@ -50,7 +50,7 @@ button[disabled]{opacity:.5;cursor:not-allowed}
 .req .no{width:30px;height:30px;border-radius:8px;background:#eef2fb;color:var(--navy);display:grid;place-items:center;font-weight:800;font-size:13px}
 .req .t{font-weight:700}.req .d{color:var(--mute);font-size:13px}
 .req .pick{display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-size:12.5px;max-width:260px}
-.req .pick .fn{color:var(--teal);font-weight:600;word-break:break-all;text-align:right}
+.req .pick .fn{color:var(--teal);font-weight:600;overflow-wrap:anywhere;text-align:right}
 .req .pick .er{color:var(--red);text-align:right}
 @media(max-width:640px){.req{grid-template-columns:30px minmax(0,1fr)}.req .pick{grid-column:2;align-items:flex-start}.req .pick .fn,.req .pick .er{text-align:left}}
 .tag{display:inline-block;font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:99px;background:#eef2fb;color:var(--navy);margin-left:6px;vertical-align:1px}
@@ -94,6 +94,7 @@ dialog::backdrop{background:#0b163088}
 .toast.on{opacity:1}
 .prog{height:8px;background:#e7ebf3;border-radius:99px;overflow:hidden;margin-top:8px}.prog i{display:block;height:100%;background:var(--teal);width:0;transition:width .2s}
 @media(max-width:640px){table.stack thead{display:none}table.stack tr{display:grid;padding:8px 0;border-bottom:1px solid var(--line)}table.stack td{border:0;padding:3px 0 3px 8.5em;position:relative;text-align:left}table.stack td::before{content:attr(data-l);position:absolute;left:0;width:8em;color:var(--mute);font-size:12.5px}table.stack td:empty{display:none}}
+#sbody td:first-child,#srbody td:first-child,#pbody td:nth-child(4),#kbody td:first-child{white-space:nowrap}
 .jtab{table-layout:fixed}.jtab th:nth-child(1){width:110px}.jtab th:nth-child(2){width:21%}.jtab th:nth-child(3){width:21%}.jtab th:nth-child(4){width:12%}
 @media(max-width:640px){.jtab{table-layout:auto}.jtab th{width:auto!important}}
 .jtab td{font-size:13.5px}.jtab td.jam{font-weight:800;color:var(--navy);white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -106,7 +107,8 @@ dialog::backdrop{background:#0b163088}
 .thumbs figure{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fafbfd;font-size:12.5px}
 .thumbs img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;background:#e7ebf3}
 .thumbs figcaption{padding:6px 8px}
-.ok{color:var(--teal);font-weight:700}.no{color:var(--red);font-weight:700}
+.good{color:var(--teal);font-weight:700}.bad{color:var(--red);font-weight:700}
+.syarat table{font-size:13.5px;margin:2px 0 4px;width:auto;min-width:min(100%,520px)}.syarat td:first-child{padding-right:24px}.syarat th,.syarat td{padding:5px 8px}.syarat th{background:transparent}
 .syarat{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:6px;font-size:13.5px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -124,7 +126,7 @@ dialog::backdrop{background:#0b163088}
   <!-- ===================== PENDAFTARAN ===================== -->
   <section id="v-daftar" class="view">
     <h1>Pendaftaran Seminar &amp; Sidang</h1>
-    <p class="lead">Pilih jenis ujian dan Kode (No. Kelompok / No. Individu) sesuai surat penugasan pembimbingan, lalu unggah semua syarat. Formulir cukup ditandatangani digital.</p>
+    <p class="lead">Pilih jenis ujian dan Kode (No. Kelompok / No. Individu) sesuai surat penugasan pembimbingan, lalu unggah semua syarat. Formulir cukup ditandatangani digital, tidak perlu tanda tangan basah. Nama file akan disesuaikan otomatis.</p>
     <form id="fdaftar" novalidate>
       <div class="card">
         <div class="seg" role="group" aria-label="Jenis ujian">
@@ -616,10 +618,11 @@ let syarat = null;          // hasil cek_syarat_sidang untuk Kode terpilih
 function syaratHTML() {
   if (!$("kode").value) return `<div class="syarat note">Pilih Kode untuk melihat rekap kehadiran.</div>`;
   if (!syarat) return `<div class="syarat note">Memeriksa kehadiran…</div>`;
-  if (syarat.error) return `<div class="syarat no">${esc(syarat.error)}</div>`;
-  return `<div class="syarat">${syarat.anggota.map(a => `<div>${esc(a.nama)}: hadir <b>${a.hadir}</b>/${syarat.min_hadir}, bertanya <b>${a.bertanya}</b>/${syarat.min_bertanya}
-    <span class="${a.ok ? "ok" : "no"}">${a.ok ? "✓ memenuhi" : "✗ belum memenuhi"}</span></div>`).join("")}
-    ${syarat.ok ? "" : `<div class="no" style="margin-top:4px">Pendaftaran sidang belum bisa dikirim sampai semua anggota memenuhi syarat.</div>`}</div>`;
+  if (syarat.error) return `<div class="syarat bad">${esc(syarat.error)}</div>`;
+  return `<div class="syarat"><table><thead><tr><th>Mahasiswa</th><th class="n">Hadir</th><th class="n">Bertanya</th><th>Status</th></tr></thead><tbody>
+    ${syarat.anggota.map(a => `<tr><td>${esc(a.nama)}</td><td class="n">${a.hadir} / ${syarat.min_hadir}</td><td class="n">${a.bertanya} / ${syarat.min_bertanya}</td>
+      <td><span class="${a.ok ? "good" : "bad"}">${a.ok ? "Memenuhi" : "Belum memenuhi"}</span></td></tr>`).join("")}</tbody></table>
+    ${syarat.ok ? `<div class="good">Semua anggota memenuhi syarat kehadiran.</div>` : `<div class="bad">Pendaftaran sidang belum bisa dikirim sampai semua anggota memenuhi syarat.</div>`}</div>`;
 }
 async function cekSyarat() {
   syarat = null;
@@ -743,7 +746,7 @@ function renderRekapPublik(q) {
   $("srekapnote").textContent = `Syarat mendaftar Sidang Skripsi: minimal ${s.min_hadir}x hadir dan ${s.min_bertanya}x bertanya di seminar proposal teman. Kirim bukti lewat menu Presensi Seminar pada hari seminar.`;
   $("srbody").innerHTML = rows.length ? rows.map(r => { const ok = r.hadir >= r.min_hadir && r.bertanya >= r.min_bertanya;
     return `<tr><td data-l="Kode"><b>${esc(r.kode)}</b></td><td data-l="Nama">${esc(r.nama)}</td><td class="n" data-l="Hadir">${r.hadir}</td><td class="n" data-l="Bertanya">${r.bertanya}</td>
-      <td data-l="Syarat"><span class="${ok ? "ok" : "no"}">${ok ? "Memenuhi" : `Kurang ${Math.max(0, r.min_hadir - r.hadir)} hadir, ${Math.max(0, r.min_bertanya - r.bertanya)} bertanya`}</span></td></tr>`; }).join("")
+      <td data-l="Syarat"><span class="${ok ? "good" : "bad"}">${ok ? "Memenuhi" : `Kurang ${Math.max(0, r.min_hadir - r.hadir)} hadir, ${Math.max(0, r.min_bertanya - r.bertanya)} bertanya`}</span></td></tr>`; }).join("")
     : `<tr><td colspan="5" class="note">Belum ada data.</td></tr>`;
 }
 function agendaHTML(rows, admin) {
@@ -804,7 +807,7 @@ async function cekHadirNim() {
   if (!sem || !nim || !sb) return null;
   const {data, error} = await sb.rpc("cek_presensi", {p_pendaftaran: sem, p_nim: nim});
   const res = error ? {ok: false, pesan: error.message} : data;
-  $("hnimmsg").innerHTML = res.ok ? `<span class="ok">${esc(res.nama)}</span>` : `<span class="no">${esc((res.nama ? res.nama + ": " : "") + res.pesan)}</span>`;
+  $("hnimmsg").innerHTML = res.ok ? `<span class="good">${esc(res.nama)}</span>` : `<span class="bad">${esc((res.nama ? res.nama + ": " : "") + res.pesan)}</span>`;
   return res;
 }
 $("hnim").addEventListener("change", cekHadirNim);
@@ -870,8 +873,8 @@ async function cekSaya() {
   const rows = k.data || [], sah = rows.filter(x => x.status !== "Ditolak"), st = (s.data || [])[0] || {min_hadir: 10, min_bertanya: 3};
   const h = sah.length, t = sah.filter(x => x.bertanya).length, ok = h >= st.min_hadir && t >= st.min_bertanya;
   out.innerHTML = `<div class="stats" style="margin:0 0 8px"><div class="stat"><b>${h}<span style="font-size:14px">/${st.min_hadir}</span></b><span>Hadir</span></div><div class="stat"><b>${t}<span style="font-size:14px">/${st.min_bertanya}</span></b><span>Bertanya</span></div></div>
-    <div class="${ok ? "ok" : "no"}" style="margin-bottom:6px">${ok ? "Syarat kehadiran untuk sidang sudah terpenuhi." : "Belum memenuhi syarat kehadiran untuk sidang."}</div>
-    ${rows.length ? `<table><thead><tr><th>Tanggal</th><th>Seminar</th><th>Bertanya</th><th>Status</th></tr></thead><tbody>${rows.map(x => `<tr><td>${esc(tglPanjang(x.tanggal))}</td><td>${esc(x.kode || "–")}</td><td>${x.bertanya ? "Ya" : "–"}</td><td>${x.status === "Ditolak" ? '<span class="no">Ditolak</span>' : "Sah"}</td></tr>`).join("")}</tbody></table>` : `<p class="note">Belum ada kehadiran tercatat untuk NIM ini.</p>`}`;
+    <div class="${ok ? "good" : "bad"}" style="margin-bottom:6px">${ok ? "Syarat kehadiran untuk sidang sudah terpenuhi." : "Belum memenuhi syarat kehadiran untuk sidang."}</div>
+    ${rows.length ? `<table><thead><tr><th>Tanggal</th><th>Seminar</th><th>Bertanya</th><th>Status</th></tr></thead><tbody>${rows.map(x => `<tr><td>${esc(tglPanjang(x.tanggal))}</td><td>${esc(x.kode || "–")}</td><td>${x.bertanya ? "Ya" : "–"}</td><td>${x.status === "Ditolak" ? '<span class="bad">Ditolak</span>' : "Sah"}</td></tr>`).join("")}</tbody></table>` : `<p class="note">Belum ada kehadiran tercatat untuk NIM ini.</p>`}`;
 }
 $("ckbtn").addEventListener("click", cekSaya);
 $("cknim").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); cekSaya(); } });
@@ -1068,8 +1071,8 @@ async function galeriHadir(list, el) {
   if (paths.length) { const {data} = await sb.storage.from(BUCKET).createSignedUrls(paths, 3600); (data || []).forEach(d => { if (d.signedUrl) urls[d.path] = d.signedUrl; }); }
   el.innerHTML = list.map(k => { const a = nimInfo(k.nim) || {};
     return `<figure>${k.foto ? `<a href="${esc(urls[k.foto] || "#")}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(urls[k.foto] || "")}" alt="Selfie ${esc(a.nama || k.nim)}"></a>` : `<div class="note" style="padding:30px 8px;text-align:center">input manual</div>`}
-      <figcaption><b>${esc(a.nama || k.nim)}</b><br>${esc(k.nim)}${k.bertanya ? `<br><span class="ok">Bertanya:</span> ${esc(k.pertanyaan || "")}` : ""}
-      <br>${k.status === "Ditolak" ? '<span class="no">Ditolak</span>' : "Sah"} · <button class="ghost" data-tog="${esc(k.id)}" style="min-height:26px;padding:0 6px;font-size:12px">${k.status === "Ditolak" ? "Jadikan sah" : "Tolak"}</button></figcaption></figure>`; }).join("");
+      <figcaption><b>${esc(a.nama || k.nim)}</b><br>${esc(k.nim)}${k.bertanya ? `<br><span class="good">Bertanya:</span> ${esc(k.pertanyaan || "")}` : ""}
+      <br>${k.status === "Ditolak" ? '<span class="bad">Ditolak</span>' : "Sah"} · <button class="ghost" data-tog="${esc(k.id)}" style="min-height:26px;padding:0 6px;font-size:12px">${k.status === "Ditolak" ? "Jadikan sah" : "Tolak"}</button></figcaption></figure>`; }).join("");
 }
 $("dbody").addEventListener("click", e => { const b = e.target.closest("button[data-tog]"); if (b) toggleHadir(b.dataset.tog); });
 async function toggleHadir(id) {
@@ -1165,13 +1168,13 @@ function renderHadir() {
   const q = $("kcari").value.trim().toLowerCase(), fl = $("kfilter").value;
   const rows = rekapHadir().filter(r => (!q || [r.nim, r.nama, r.kode].join(" ").toLowerCase().includes(q)) && (!fl || (fl === "ok") === r.ok));
   $("kbody").innerHTML = rows.map(r => `<tr><td>${esc(r.kode)}</td><td>${esc(r.nim)}</td><td>${esc(r.nama)}</td><td class="n">${r.hadir}</td><td class="n">${r.bertanya}</td>
-    <td><span class="${r.ok ? "ok" : "no"}">${r.ok ? "Memenuhi" : "Belum"}</span></td></tr>`).join("") || `<tr><td colspan="6" class="note">Tidak ada data.</td></tr>`;
+    <td><span class="${r.ok ? "good" : "bad"}">${r.ok ? "Memenuhi" : "Belum"}</span></td></tr>`).join("") || `<tr><td colspan="6" class="note">Tidak ada data.</td></tr>`;
   const det = hadirAll.filter(k => { const a = nimInfo(k.nim) || {}; return !q || [k.nim, a.nama, a.kode, semLabel(k)].join(" ").toLowerCase().includes(q); })
     .sort((x, y) => String(y.tanggal).localeCompare(String(x.tanggal)) || String(y.created_at).localeCompare(String(x.created_at)));
   $("kdet").innerHTML = det.map(k => { const a = nimInfo(k.nim) || {};
     return `<tr><td>${esc(tglPanjang(k.tanggal))}</td><td>${esc(semLabel(k))}</td><td>${esc(k.nim)}</td><td>${esc(a.nama || "")}</td><td>${k.bertanya ? "Ya" + (k.pertanyaan ? `<br><span class="note">${esc(k.pertanyaan)}</span>` : "") : "–"}</td>
       <td>${k.sumber === "manual" ? "Input admin" : (k.foto ? `<button class="ghost" data-foto="${esc(k.foto)}" style="min-height:30px;padding:0 8px">Lihat selfie</button>` : "Selfie")}${k.catatan ? `<br><span class="note">${esc(k.catatan)}</span>` : ""}</td>
-      <td>${k.status === "Ditolak" ? '<span class="no">Ditolak</span>' : '<span class="ok">Sah</span>'}</td>
+      <td>${k.status === "Ditolak" ? '<span class="bad">Ditolak</span>' : '<span class="good">Sah</span>'}</td>
       <td class="row" style="gap:4px;flex-wrap:nowrap"><button class="ghost" data-tog="${esc(k.id)}" style="min-height:30px;padding:0 8px">${k.status === "Ditolak" ? "Jadikan sah" : "Tolak"}</button><button class="ghost danger" data-hdel="${esc(k.id)}" style="min-height:30px;padding:0 8px">Hapus</button></td></tr>`; }).join("")
     || `<tr><td colspan="8" class="note">Belum ada presensi.</td></tr>`;
 }
