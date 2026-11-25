@@ -110,6 +110,12 @@ dialog::backdrop{background:#0b163088}
 .good{color:var(--teal);font-weight:700}.bad{color:var(--red);font-weight:700}
 .syarat table{font-size:13.5px;margin:2px 0 4px;width:auto;min-width:min(100%,520px)}.syarat td:first-child{padding-right:24px}.syarat th,.syarat td{padding:5px 8px}.syarat th{background:transparent}
 .syarat{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:6px;font-size:13.5px}
+.cam{position:fixed;inset:0;background:#000;z-index:60;display:flex;flex-direction:column}.cam video{flex:1;min-height:0;width:100%;object-fit:cover;transform:scaleX(-1)}.cam.back video{transform:none}
+.camb{display:flex;gap:8px;justify-content:center;padding:14px;background:#000}.camb button{min-width:96px}
+.rtab td{vertical-align:top}.rtab .em{color:var(--mute);font-size:12.5px}.miss{color:var(--red);font-weight:700}
+.dsinp{min-height:34px;padding:4px 8px}
+.anggrow{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1fr) auto;gap:8px;margin-bottom:8px}
+@media(max-width:640px){.anggrow{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -159,7 +165,7 @@ dialog::backdrop{background:#0b163088}
       </div>
       <div class="card">
         <h2 id="reqtitle">Syarat Pendaftaran Seminar Proposal</h2>
-        <p class="note" style="margin-top:-6px">Format PDF kecuali disebutkan lain. Maksimal 10 MB per file.</p>
+        <p class="note" style="margin-top:-6px">Format PDF kecuali disebutkan lain. Maksimal 25 MB per file (bahan presentasi seminar maks. 10 MB).</p>
         <div id="reqs"></div>
       </div>
       <div id="sendmsg"></div>
@@ -171,14 +177,14 @@ dialog::backdrop{background:#0b163088}
   <!-- ===================== PRESENSI ===================== -->
   <section id="v-presensi" class="view hide">
     <h1>Presensi Seminar Proposal</h1>
-    <p class="lead">Mahasiswa Business Mathematics wajib menghadiri seminar proposal teman. Ambil selfie di lokasi seminar (atau dengan layar seminar online) sebagai bukti. Presensi hanya dibuka <b>pada hari seminar</b>; setelah hari itu lewat, bukti tidak bisa dikirim lagi.</p>
+    <p class="lead">Mahasiswa Business Mathematics wajib menghadiri seminar proposal teman. Kirim presensi dari <b>HP</b> dengan selfie langsung dari kamera di lokasi seminar. Presensi hanya dibuka <b>pada jam yang tertera</b> di setiap seminar, dan Anda hanya boleh presensi di satu seminar bila ada jadwal yang bersamaan.</p>
     <div class="grid2">
       <form class="card" id="fhadir" novalidate>
         <h2 id="hhari">Seminar hari ini</h2>
         <div id="hlist"></div>
         <label class="f">NIM Anda<input id="hnim" inputmode="numeric" autocomplete="off" placeholder="231023100xx"><span id="hnimmsg" class="note"></span></label>
-        <label class="f">Selfie di seminar <small>Wajah Anda dan suasana seminar terlihat. Foto diberi cap waktu otomatis.</small></label>
-        <div class="row"><button type="button" id="hfoto">Ambil / pilih foto</button><span class="note" id="hfotonote"></span></div>
+        <label class="f">Selfie di seminar <small>Wajib memakai kamera HP saat itu juga (tidak bisa unggah file). Wajah Anda dan suasana seminar harus terlihat.</small></label>
+        <div class="row"><button type="button" id="hfoto">Buka kamera</button><span class="note" id="hfotonote"></span></div>
         <img id="hprev" class="selfie hide" alt="Pratinjau selfie">
         <label class="ck" style="margin-top:12px"><input type="checkbox" id="htanya"> Saya mengajukan pertanyaan di seminar ini</label>
         <label class="f hide" id="htanyabox">Pertanyaan yang Anda ajukan<textarea id="hpert" placeholder="Tuliskan singkat pertanyaan Anda"></textarea></label>
@@ -248,6 +254,13 @@ dialog::backdrop{background:#0b163088}
         <div class="row" style="margin-bottom:12px"><select id="jjenis" style="max-width:180px"><option value="">Semua jenis</option><option value="seminar">Seminar</option><option value="sidang">Sidang</option></select><button id="jxlsx">Unduh jadwal (Excel)</button></div>
         <p class="note" style="margin-top:-4px">Klik baris jadwal untuk mengubah tanggal, ruang, atau dosen penguji. Dosen pembimbing terisi otomatis dari data Kode.</p>
         <div id="jagenda" class="agenda"></div>
+        <div class="card" style="margin-top:16px">
+          <div class="row" style="justify-content:space-between"><h2 style="margin:0">Template undangan Outlook</h2><select id="ujenis" style="max-width:220px"><option value="seminar">Seminar Proposal</option><option value="sidang">Sidang Skripsi</option></select></div>
+          <p class="note">Kata dalam kurung kurawal diganti otomatis: <code>{jenis}</code> <code>{kode}</code> <code>{mahasiswa}</code> <code>{judul}</code> <code>{hari_tanggal}</code> <code>{jam}</code> <code>{tempat}</code> <code>{pembimbing}</code> <code>{penguji}</code> <code>{angkatan}</code> <code>{link_materi}</code>.</p>
+          <label class="f">Subjek<input id="usubjek"></label>
+          <label class="f">Isi undangan<textarea id="uisi" style="min-height:320px;font-family:inherit"></textarea></label>
+          <div class="row"><button class="pri" id="usave">Simpan template</button><button id="ureset">Kembalikan ke bawaan</button></div>
+        </div>
       </div>
 
       <div id="t-hadir" class="hide">
@@ -255,7 +268,11 @@ dialog::backdrop{background:#0b163088}
           <div class="card">
             <h2>Syarat daftar sidang</h2>
             <p class="note" style="margin-top:-6px">Setiap anggota Kode harus memenuhi syarat ini sebelum bisa mendaftar Sidang Skripsi. Presensi berstatus <i>Ditolak</i> tidak dihitung.</p>
-            <div class="row"><label class="f" style="max-width:150px;margin:0">Minimal hadir<input id="kminh" type="number" min="0"></label><label class="f" style="max-width:150px;margin:0">Minimal bertanya<input id="kmint" type="number" min="0"></label><button id="ksyarat" style="align-self:end">Simpan</button></div>
+            <div class="row"><label class="f" style="max-width:150px;margin:0">Minimal hadir<input id="kminh" type="number" min="0"></label><label class="f" style="max-width:150px;margin:0">Minimal bertanya<input id="kmint" type="number" min="0"></label></div>
+            <h3 style="margin-top:14px">Jam presensi selfie</h3>
+            <p class="note" style="margin-top:-4px">Berlaku untuk semua seminar. Jam khusus satu seminar bisa diatur di detail seminar.</p>
+            <div class="row"><label class="f" style="max-width:190px;margin:0">Dibuka (menit sebelum mulai)<input id="kbuka" type="number" min="0" max="240"></label><label class="f" style="max-width:190px;margin:0">Ditutup (menit setelah mulai)<input id="ktutup" type="number" min="1" max="600"></label></div>
+            <div class="row" style="margin-top:10px"><button id="ksyarat" class="pri">Simpan pengaturan</button></div>
           </div>
           <div class="card">
             <h2>Input kehadiran manual</h2>
@@ -274,8 +291,9 @@ dialog::backdrop{background:#0b163088}
           <div class="scroll" style="margin-top:10px"><table><thead><tr><th>Kode</th><th>NIM</th><th>Nama</th><th class="n">Hadir</th><th class="n">Bertanya</th><th>Syarat sidang</th></tr></thead><tbody id="kbody"></tbody></table></div>
         </div>
         <div class="card">
-          <h2>Daftar presensi</h2>
-          <div class="scroll"><table><thead><tr><th>Tanggal</th><th>Seminar</th><th>NIM</th><th>Nama</th><th>Bertanya</th><th>Sumber</th><th>Status</th><th></th></tr></thead><tbody id="kdet"></tbody></table></div>
+          <div class="row" style="justify-content:space-between"><h2 style="margin:0">Daftar presensi</h2><button id="kperjudul">Unduh presensi per seminar (Excel)</button></div>
+          <p class="note">Tolak <b>peserta</b> bila kehadiran tidak sah (tidak dihitung sama sekali). Tolak <b>penanya</b> bila tidak sesuai rekap penanya offline (tetap dihitung hadir).</p>
+          <div class="scroll"><table><thead><tr><th>Tanggal</th><th>Seminar</th><th>NIM</th><th>Nama</th><th>Bertanya</th><th>Sumber</th><th>Peserta</th><th>Penanya</th><th></th></tr></thead><tbody id="kdet"></tbody></table></div>
         </div>
       </div>
 
@@ -317,13 +335,26 @@ dialog::backdrop{background:#0b163088}
       </div>
 
       <div id="t-roster" class="hide">
-        <p class="note">Sumber: Penugasan Pembimbingan TA Angkatan 2023. Perubahan data Kode dapat dilakukan di Supabase → Table Editor (tabel <code>roster</code> dan <code>roster_anggota</code>).</p>
-        <div class="card scroll" style="padding:0"><table><thead><tr><th>Kode</th><th>Anggota (NIM)</th><th>Pembimbing 1</th><th>Pembimbing 2</th></tr></thead><tbody id="rsbody"></tbody></table></div>
+        <div class="card">
+          <div class="row" style="justify-content:space-between"><h2 style="margin:0">Data Kode</h2>
+            <div class="row"><input id="rcari" placeholder="Cari Kode / nama / dosen" style="max-width:240px"><label class="ck" style="margin:0"><input type="checkbox" id="rnonaktif"> Tampilkan nonaktif</label><button id="radd">Tambah Kode</button><button id="rxlsx">Unduh Excel</button></div></div>
+          <p class="note">Klik <b>Ubah</b> untuk mengganti pembimbing, anggota, NIM, nama, atau email. Email mahasiswa yang kosong otomatis memakai <code>NIM@student.prasetiyamulya.ac.id</code>. Kolom penguji diambil dari pendaftaran seminar dan sidang terbaru.</p>
+          <div class="scroll"><table class="rtab"><thead><tr><th>Kode</th><th>Mahasiswa</th><th>Pembimbing</th><th>Penguji</th><th></th></tr></thead><tbody id="rsbody"></tbody></table></div>
+        </div>
+        <div class="card">
+          <h2>Email dosen</h2>
+          <p class="note" style="margin-top:-6px">Dipakai untuk undangan Outlook. Nama harus sama persis dengan nama di data Kode / kolom penguji. Dosen yang belum punya email ditandai merah.</p>
+          <div class="scroll"><table><thead><tr><th>Nama dosen (dengan gelar)</th><th>Email</th><th>Peran</th><th></th></tr></thead><tbody id="dsbody"></tbody></table></div>
+          <div id="dsmsg"></div>
+          <div class="row" style="margin-top:8px"><button id="dsadd">Tambah dosen</button><button class="pri" id="dssave">Simpan email dosen</button></div>
+        </div>
       </div>
     </div>
   </section>
 </main>
 
+<div id="cam" class="cam hide" role="dialog" aria-label="Kamera selfie"><video id="camv" playsinline autoplay muted></video>
+  <div class="camb"><button id="camflip" type="button">Ganti kamera</button><button id="camshot" type="button" class="pri">Ambil foto</button><button id="camx" type="button">Batal</button></div></div>
 <dialog id="dlg"><div class="dh"><div><b id="dtitle"></b><div class="note" id="dsub"></div></div><button class="ghost" id="dclose" aria-label="Tutup">Tutup</button></div><div class="db" id="dbody"></div></dialog>
 <div class="toast" id="toast" role="status"></div>
 
@@ -788,19 +819,32 @@ async function loadPresensi() {
   hadirRows = (error ? [] : data || []).filter(bisaPresensi);
   renderPresensi();
 }
+const isHP = () => !!((navigator.userAgentData && navigator.userAgentData.mobile) || /Android|iPhone|iPod|Mobile|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1));
+const sekarangWIB = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 19);
+const hhmm = ts => ts ? String(ts).slice(11, 16).replace(":", ".") : "";
+function statusJendela(r) {
+  const now = sekarangWIB(), b = r.presensi_dibuka ? String(r.presensi_dibuka).slice(0, 19) : r.jadwal_tanggal + "T00:00:00",
+        t = r.presensi_ditutup ? String(r.presensi_ditutup).slice(0, 19) : r.jadwal_tanggal + "T23:59:59";
+  return {buka: now >= b && now <= t, belum: now < b, label: `Presensi ${hhmm(b)}–${hhmm(t)} WIB`};
+}
 function renderPresensi() {
   const today = hariIni(), pilih = (document.querySelector("input[name=hsem]:checked") || {}).value;
   const hari = hadirRows.filter(r => r.jadwal_tanggal === today).sort((a, b) => String(a.jadwal_mulai).localeCompare(String(b.jadwal_mulai)));
+  const terbuka = hari.filter(r => statusJendela(r).buka), hp = isHP();
   $("hhari").textContent = "Seminar hari ini · " + tglPanjang(today, true);
-  $("hlist").innerHTML = hari.length ? hari.map(r => { const i = kodeInfo(r.kode) || {anggota: []};
-    return `<label class="semopt"><input type="radio" name="hsem" value="${esc(r.id)}" ${pilih === r.id || hari.length === 1 ? "checked" : ""}>
+  $("hlist").innerHTML = (!hp ? `<div class="msg err">Presensi hanya bisa dikirim dari <b>HP</b> dengan kamera langsung. Buka halaman ini di HP Anda.</div>` : "")
+    + (hari.length ? hari.map(r => { const i = kodeInfo(r.kode) || {anggota: []}, j = statusJendela(r);
+    return `<label class="semopt"${j.buka ? "" : ' style="opacity:.6;cursor:not-allowed"'}><input type="radio" name="hsem" value="${esc(r.id)}" ${!j.buka ? "disabled" : (pilih === r.id || terbuka.length === 1 ? "checked" : "")}>
       <span><b>${esc(jam(r.jadwal_mulai))}${r.jadwal_selesai ? "–" + esc(jam(r.jadwal_selesai)) : ""} · ${esc(r.kode)}</b>${ulangTag(r)} – ${esc(i.anggota.join(", "))}<br>
-      <span class="note">${esc(r.judul)}${r.ruang || r.moda ? " · " + esc([r.moda, r.ruang].filter(Boolean).join(" · ")) : ""}</span></span></label>`; }).join("")
-    : `<div class="msg info">Tidak ada seminar proposal yang dijadwalkan hari ini. Presensi hanya bisa dikirim pada hari seminar.</div>`;
-  ["hnim", "hfoto", "htanya", "hpert", "hkirim"].forEach(i => $(i).disabled = !hari.length);
+      <span class="note">${esc(r.judul)}${r.ruang || r.moda ? " · " + esc([r.moda, r.ruang].filter(Boolean).join(" · ")) : ""}</span><br>
+      <span class="${j.buka ? "good" : "bad"}" style="font-size:13px">${esc(j.label)} · ${j.buka ? "dibuka" : j.belum ? "belum dibuka" : "sudah ditutup"}</span></span></label>`; }).join("")
+    : `<div class="msg info">Tidak ada seminar proposal yang dijadwalkan hari ini. Presensi hanya bisa dikirim pada hari seminar.</div>`);
+  ["hnim", "hfoto", "htanya", "hpert", "hkirim"].forEach(i => $(i).disabled = !terbuka.length || !hp);
   const next = hadirRows.filter(r => r.jadwal_tanggal > today).sort((a, b) => (a.jadwal_tanggal + a.jadwal_mulai).localeCompare(b.jadwal_tanggal + b.jadwal_mulai)).slice(0, 8);
   $("hnext").innerHTML = next.length ? next.map(r => `<div style="padding:6px 0;border-top:1px solid var(--line)"><b>${esc(tglPanjang(r.jadwal_tanggal, true))}</b>, ${esc(jam(r.jadwal_mulai))} · ${esc(r.kode)}${ulangTag(r)}<br>${esc(r.ruang || r.moda || "")}</div>`).join("") : "Belum ada jadwal seminar berikutnya.";
 }
+setInterval(() => { if (!$("v-presensi").classList.contains("hide") && !document.hidden && $("cam").classList.contains("hide")) renderPresensi(); }, 30000);
 async function cekHadirNim() {
   const sem = (document.querySelector("input[name=hsem]:checked") || {}).value, nim = $("hnim").value.replace(/\s/g, "");
   $("hnimmsg").textContent = "";
@@ -813,40 +857,58 @@ async function cekHadirNim() {
 $("hnim").addEventListener("change", cekHadirNim);
 $("hlist").addEventListener("change", cekHadirNim);
 $("htanya").addEventListener("change", () => $("htanyabox").classList.toggle("hide", !$("htanya").checked));
-async function fotoBercap(file, cap) {          // perkecil ke maks. 1280 px, JPEG, beri cap waktu
-  const url = URL.createObjectURL(file);
+
+/* kamera langsung (tanpa unggah file) */
+let camStream = null, camDepan = true;
+async function bukaKamera() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error("Browser ini tidak mendukung kamera. Buka portal di Chrome (Android) atau Safari (iPhone).");
+  tutupKamera(false);
   try {
-    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error("Foto tidak bisa dibaca. Gunakan format JPG/PNG.")); i.src = url; });
-    const s = Math.min(1, 1280 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement("canvas");
-    c.width = Math.round(img.naturalWidth * s); c.height = Math.round(img.naturalHeight * s);
-    const g = c.getContext("2d"); g.drawImage(img, 0, 0, c.width, c.height);
-    const fs = Math.max(14, Math.round(c.width / 34)); g.font = `700 ${fs}px sans-serif`;
-    const w = Math.min(c.width, g.measureText(cap).width + fs * 1.2);
-    g.fillStyle = "rgba(0,0,0,.55)"; g.fillRect(0, c.height - fs * 1.9, w, fs * 1.9);
-    g.fillStyle = "#fff"; g.fillText(cap, fs * .6, c.height - fs * .65);
-    return await new Promise(r => c.toBlob(r, "image/jpeg", .82));
-  } finally { URL.revokeObjectURL(url); }
+    camStream = await navigator.mediaDevices.getUserMedia({audio: false, video: {facingMode: camDepan ? "user" : "environment", width: {ideal: 1280}, height: {ideal: 1280}}});
+  } catch (e) {
+    throw new Error(/NotAllowed|Permission/i.test(e.name + e.message) ? "Akses kamera ditolak. Izinkan kamera untuk situs ini di pengaturan browser, lalu tekan Buka kamera lagi."
+      : "Kamera tidak bisa dibuka (" + e.message + "). Coba buka portal di Chrome atau Safari.");
+  }
+  $("camv").srcObject = camStream; $("cam").classList.remove("hide"); $("cam").classList.toggle("back", !camDepan);
 }
-$("hfoto").addEventListener("click", () => {
-  const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*"; inp.setAttribute("capture", "user");
-  inp.onchange = async () => {
-    const f = inp.files[0]; if (!f) return;
-    const sem = hadirRows.find(r => r.id === (document.querySelector("input[name=hsem]:checked") || {}).value);
-    const now = new Date(Date.now() + 7 * 3600e3);
-    const cap = `${sem ? "Seminar " + sem.kode + " · " : ""}${tglPanjang(hariIni())} ${pad(now.getUTCHours())}.${pad(now.getUTCMinutes())} WIB`;
-    try { fotoBlob = await fotoBercap(f, cap); } catch (e) { fotoBlob = null; $("hfotonote").textContent = e.message; return; }
-    $("hprev").src = URL.createObjectURL(fotoBlob); $("hprev").classList.remove("hide");
-    $("hfotonote").textContent = `Foto siap (${Math.round(fotoBlob.size / 1024)} KB).`; $("hfoto").textContent = "Ganti foto";
-  };
-  inp.click();
+function tutupKamera(sembunyi = true) { if (camStream) camStream.getTracks().forEach(t => t.stop()); camStream = null; if (sembunyi) $("cam").classList.add("hide"); }
+function ambilFoto(cap) {
+  const v = $("camv"), w0 = v.videoWidth, h0 = v.videoHeight;
+  if (!w0) throw new Error("Kamera belum siap. Tunggu sebentar lalu ambil lagi.");
+  const sk = Math.min(1, 1280 / Math.max(w0, h0)), c = document.createElement("canvas");
+  c.width = Math.round(w0 * sk); c.height = Math.round(h0 * sk);
+  const g = c.getContext("2d");
+  if (camDepan) { g.translate(c.width, 0); g.scale(-1, 1); }      // simpan seperti yang terlihat di layar
+  g.drawImage(v, 0, 0, c.width, c.height); g.setTransform(1, 0, 0, 1, 0, 0);
+  const fs = Math.max(14, Math.round(c.width / 34)); g.font = `700 ${fs}px sans-serif`;
+  const w = Math.min(c.width, g.measureText(cap).width + fs * 1.2);
+  g.fillStyle = "rgba(0,0,0,.55)"; g.fillRect(0, c.height - fs * 1.9, w, fs * 1.9);
+  g.fillStyle = "#fff"; g.fillText(cap, fs * .6, c.height - fs * .65);
+  return new Promise(r => c.toBlob(r, "image/jpeg", .82));
+}
+$("hfoto").addEventListener("click", async () => {
+  if (!isHP()) { $("hfotonote").textContent = "Presensi hanya bisa dari HP."; return; }
+  try { await bukaKamera(); } catch (e) { $("hfotonote").textContent = e.message; }
+});
+$("camflip").addEventListener("click", async () => { camDepan = !camDepan; try { await bukaKamera(); } catch (e) { tutupKamera(); $("hfotonote").textContent = e.message; } });
+$("camx").addEventListener("click", () => tutupKamera());
+$("camshot").addEventListener("click", async () => {
+  const sem = hadirRows.find(r => r.id === (document.querySelector("input[name=hsem]:checked") || {}).value);
+  const now = new Date(Date.now() + 7 * 3600e3);
+  const cap = `${sem ? "Seminar " + sem.kode + " · " : ""}${tglPanjang(hariIni())} ${pad(now.getUTCHours())}.${pad(now.getUTCMinutes())} WIB`;
+  try { fotoBlob = await ambilFoto(cap); } catch (e) { $("hfotonote").textContent = e.message; return; }
+  tutupKamera();
+  $("hprev").src = URL.createObjectURL(fotoBlob); $("hprev").classList.remove("hide");
+  $("hfotonote").textContent = `Foto siap (${Math.round(fotoBlob.size / 1024)} KB).`; $("hfoto").textContent = "Ambil ulang";
 });
 $("fhadir").addEventListener("submit", async e => {
   e.preventDefault();
   const out = $("hmsg"), sem = (document.querySelector("input[name=hsem]:checked") || {}).value, nim = $("hnim").value.replace(/\s/g, "");
   const tanya = $("htanya").checked, pert = $("hpert").value.trim(), errs = [];
-  if (!sem) errs.push("Pilih seminar yang Anda hadiri.");
+  if (!isHP()) errs.push("Presensi hanya bisa dikirim dari HP.");
+  if (!sem) errs.push("Pilih seminar yang sedang dibuka presensinya.");
   if (!nim) errs.push("Isi NIM.");
-  if (!fotoBlob) errs.push("Ambil selfie sebagai bukti kehadiran.");
+  if (!fotoBlob) errs.push("Ambil selfie dengan kamera sebagai bukti kehadiran.");
   if (tanya && !pert) errs.push("Tuliskan pertanyaan yang Anda ajukan.");
   if (!errs.length) { const c = await cekHadirNim(); if (!c || !c.ok) errs.push(c ? c.pesan : "NIM belum bisa diperiksa."); }
   if (errs.length) { msg(out, "err", errs.map(esc).join("<br>")); return; }
@@ -856,10 +918,10 @@ $("fhadir").addEventListener("submit", async e => {
     const foto = `kehadiran/${slug(r.kode)}_${r.jadwal_tanggal}_${sem.slice(0, 8)}/${nim}_${Date.now()}.jpg`;
     const up = await sb.storage.from(BUCKET).upload(foto, fotoBlob, {contentType: "image/jpeg", upsert: false});
     if (up.error) throw new Error("Gagal mengunggah foto: " + up.error.message);
-    const {error} = await sb.from("kehadiran").insert({pendaftaran_id: sem, nim, bertanya: tanya, pertanyaan: tanya ? pert : null, foto});
-    if (error) throw new Error(/row-level|duplicate/i.test(error.message) ? "Presensi ditolak: sudah tercatat atau di luar hari seminar." : error.message);
+    const {error} = await sb.from("kehadiran").insert({pendaftaran_id: sem, nim, bertanya: tanya, pertanyaan: tanya ? pert : null, foto, perangkat: navigator.userAgent.slice(0, 250)});
+    if (error) { const c = /row-level|duplicate/i.test(error.message) ? await cekHadirNim() : null; throw new Error(c && !c.ok ? "Presensi ditolak: " + c.pesan : error.message); }
     msg(out, "ok", `<b>Presensi tercatat.</b> ${esc($("hnimmsg").textContent)} hadir di seminar ${esc(r.kode)}${tanya ? " sebagai penanya" : ""}.`);
-    fotoBlob = null; $("hprev").classList.add("hide"); $("hfoto").textContent = "Ambil / pilih foto"; $("hfotonote").textContent = "";
+    fotoBlob = null; $("hprev").classList.add("hide"); $("hfoto").textContent = "Buka kamera"; $("hfotonote").textContent = "";
     $("htanya").checked = false; $("hpert").value = ""; $("htanyabox").classList.add("hide");
     $("cknim").value = nim; cekSaya();
   } catch (err) { msg(out, "err", esc(err.message)); }
@@ -871,10 +933,10 @@ async function cekSaya() {
   const [k, s] = await Promise.all([sb.rpc("kehadiran_saya", {p_nim: nim}), sb.from("rekap_kehadiran_publik").select("min_hadir,min_bertanya").limit(1)]);
   if (k.error) { msg(out, "err", esc(k.error.message)); return; }
   const rows = k.data || [], sah = rows.filter(x => x.status !== "Ditolak"), st = (s.data || [])[0] || {min_hadir: 10, min_bertanya: 3};
-  const h = sah.length, t = sah.filter(x => x.bertanya).length, ok = h >= st.min_hadir && t >= st.min_bertanya;
+  const h = sah.length, t = sah.filter(x => x.bertanya && x.tanya_status !== "Ditolak").length, ok = h >= st.min_hadir && t >= st.min_bertanya;
   out.innerHTML = `<div class="stats" style="margin:0 0 8px"><div class="stat"><b>${h}<span style="font-size:14px">/${st.min_hadir}</span></b><span>Hadir</span></div><div class="stat"><b>${t}<span style="font-size:14px">/${st.min_bertanya}</span></b><span>Bertanya</span></div></div>
     <div class="${ok ? "good" : "bad"}" style="margin-bottom:6px">${ok ? "Syarat kehadiran untuk sidang sudah terpenuhi." : "Belum memenuhi syarat kehadiran untuk sidang."}</div>
-    ${rows.length ? `<table><thead><tr><th>Tanggal</th><th>Seminar</th><th>Bertanya</th><th>Status</th></tr></thead><tbody>${rows.map(x => `<tr><td>${esc(tglPanjang(x.tanggal))}</td><td>${esc(x.kode || "–")}</td><td>${x.bertanya ? "Ya" : "–"}</td><td>${x.status === "Ditolak" ? '<span class="bad">Ditolak</span>' : "Sah"}</td></tr>`).join("")}</tbody></table>` : `<p class="note">Belum ada kehadiran tercatat untuk NIM ini.</p>`}`;
+    ${rows.length ? `<table><thead><tr><th>Tanggal</th><th>Seminar</th><th>Bertanya</th><th>Status</th></tr></thead><tbody>${rows.map(x => `<tr><td>${esc(tglPanjang(x.tanggal))}</td><td>${esc(x.kode || "–")}</td><td>${x.bertanya ? (x.tanya_status === "Ditolak" ? '<span class="bad">Ditolak</span>' : "Ya") : "–"}</td><td>${x.status === "Ditolak" ? '<span class="bad">Ditolak</span>' : "Sah"}</td></tr>`).join("")}</tbody></table>` : `<p class="note">Belum ada kehadiran tercatat untuk NIM ini.</p>`}`;
 }
 $("ckbtn").addEventListener("click", cekSaya);
 $("cknim").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); cekSaya(); } });
@@ -882,7 +944,7 @@ $("stabs").addEventListener("click", e => { const b = e.target.closest("button")
 $("scari").addEventListener("input", renderStatus);
 
 /* =========================== ADMIN =========================== */
-let session = null, pend = [], anggotaAll = [], nilaiRows = [], bobot = {...RK.DEFAULT_RULES}, parsed = [], hadirAll = [], syaratHadir = {hadir: 10, bertanya: 3};
+let session = null, pend = [], anggotaAll = [], nilaiRows = [], bobot = {...RK.DEFAULT_RULES}, parsed = [], hadirAll = [], syaratHadir = {hadir: 10, bertanya: 3}, rosterAll = [], dosenAll = [], jendela = {sebelum: 0, sesudah: 20}, undangan = {};
 const nimInfo = nim => anggotaAll.find(a => a.nim === nim);
 async function refreshSession() {
   if (!sb) return;
@@ -906,21 +968,26 @@ $("atabs").addEventListener("click", e => {
   ["pend", "jadwal", "hadir", "nilai", "roster"].forEach(t => $("t-" + t).classList.toggle("hide", t !== b.dataset.t));
 });
 async function loadAdmin() {
-  const [p, a, n, s, k] = await Promise.all([
+  const [p, a, n, s, k, ro, ds] = await Promise.all([
     sb.from("pendaftaran").select("*").order("created_at", {ascending: false}),
     sb.from("roster_anggota").select("*").order("kode"),
     sb.from("nilai_form").select("*").order("created_at", {ascending: false}),
     sb.from("pengaturan").select("*"),
-    sb.from("kehadiran").select("*").order("created_at", {ascending: false})
+    sb.from("kehadiran").select("*").order("created_at", {ascending: false}),
+    sb.from("roster").select("*").order("kode"),
+    sb.from("dosen").select("*").order("nama")
   ]);
   if (p.error) { toast("Gagal memuat data: " + p.error.message); return; }
   pend = p.data || []; anggotaAll = a.data || []; nilaiRows = n.data || [];
   const b = (s.data || []).find(x => x.kunci === "bobot"); if (b) bobot = {...RK.DEFAULT_RULES, ...b.nilai};
   const sh = (s.data || []).find(x => x.kunci === "syarat_kehadiran"); if (sh) syaratHadir = {...syaratHadir, ...sh.nilai};
   hadirAll = k.error ? [] : (k.data || []);
+  rosterAll = ro.error ? [] : (ro.data || []); dosenAll = ds.error ? [] : (ds.data || []);
+  const jp = (s.data || []).find(x => x.kunci === "presensi"); if (jp) jendela = {...jendela, ...jp.nilai};
+  const ud = (s.data || []).find(x => x.kunci === "undangan"); undangan = ud ? ud.nilai : {};
   $("mnim").innerHTML = anggotaAll.slice().sort((x, y) => x.nim.localeCompare(y.nim)).map(x => `<option value="${esc(x.nim)}">${esc(x.nim)} – ${esc(x.nama)} (${esc(x.kode)})</option>`).join("");
   $("kmnim").innerHTML = $("mnim").innerHTML;
-  renderPend(); renderJadwal(); renderHadir(); renderNilai(); renderRoster();
+  renderPend(); renderJadwal(); renderHadir(); renderNilai(); renderRoster(); renderTemplate();
 }
 const latestOnly = rows => { const seen = new Set(); return rows.filter(r => { const k = r.jenis + "|" + r.kode; if (seen.has(k)) return false; seen.add(k); return true; }); };
 function filteredPend() {
@@ -970,7 +1037,7 @@ function bentrok(r, f) {
   });
   return [...new Set(out)];
 }
-const dosenList = () => [...new Set([...roster.flatMap(r => [r.pembimbing1, r.pembimbing2]), ...pend.flatMap(r => daftarNama(r.penguji))].filter(Boolean))].sort();
+const dosenList = () => [...new Set([...dosenAll.map(d => d.nama), ...rosterAll.flatMap(r => [r.pembimbing1, r.pembimbing2]), ...pend.flatMap(r => daftarNama(r.penguji))].filter(Boolean))].sort();
 function openDetail(id) {
   const r = pend.find(x => x.id === id); if (!r) return;
   const info = kodeInfo(r.kode) || {anggota: []};
@@ -989,6 +1056,10 @@ function openDetail(id) {
         <ul class="files">${(r.berkas || []).map((b, i) => `<li><span>${esc(b.nama_file)}<br><span class="note">${esc(b.label)} · ${(b.size / 1048576).toFixed(1)} MB</span></span><button class="ghost" data-open="${i}">Lihat</button></li>`).join("")}</ul>
         <div class="row" style="margin-top:10px"><button class="pri" id="dzip">Unduh semua (.zip)</button><button id="dulang">Buat ${r.jenis === "seminar" ? "seminar" : "sidang"} ulang</button></div>
         <p class="note">${lab} ulang menyalin data &amp; berkas pendaftaran ini menjadi pendaftaran baru (ulang ke-${r.percobaan || 1}) yang tinggal dijadwalkan.</p>
+        <h3 style="margin-top:14px">Undangan ${esc(lab)}</h3>
+        <p class="note" style="margin-top:-4px">Untuk dosen pembimbing, dosen penguji, dan mahasiswa. Simpan jadwal dan penguji lebih dulu.</p>
+        <div class="row"><button id="dinvcal">Undangan kalender Outlook</button><button id="dinvmail">Draft email Outlook</button><button class="ghost" id="dinvcopy">Salin penerima &amp; isi</button></div>
+        <div id="dinvmsg" style="margin-top:8px"></div>
       </div>
       <div>
         <h3>Status</h3>
@@ -1004,6 +1075,10 @@ function openDetail(id) {
           <label class="f">Moda<select id="dmoda">${["", "Offline", "Hybrid", "Online"].map(m => `<option ${m === (r.moda || "") ? "selected" : ""}>${esc(m)}</option>`).join("")}</select></label>
           <label class="f">Ruang<input id="druang" value="${esc(r.ruang || "")}" placeholder="R. 304 Gd. Eka"></label>
         </div>
+        ${r.jenis === "seminar" ? `<div class="grid2" style="gap:10px">
+          <label class="f">Presensi dibuka <small>kosong = ${jendela.sebelum ? jendela.sebelum + " menit sebelum mulai" : "jam mulai"}</small><input type="time" id="dpbuka" value="${esc((r.presensi_buka || "").slice(0, 5))}"></label>
+          <label class="f">Presensi ditutup <small>kosong = ${jendela.sesudah} menit setelah mulai</small><input type="time" id="dptutup" value="${esc((r.presensi_tutup || "").slice(0, 5))}"></label>
+        </div>` : ""}
         <label class="f">Dosen pembimbing <small>Otomatis dari data Kode</small><input value="${esc(pembimbingOf(r.kode).join("; "))}" disabled></label>
         <div class="grid2" style="gap:10px">
           <label class="f">Dosen penguji 1<input id="dpeng1" list="dosen" value="${esc(pg[0] || "")}"></label>
@@ -1014,10 +1089,11 @@ function openDetail(id) {
         <div class="row"><button class="pri" id="dsave">Simpan</button><button class="danger" id="ddel">Hapus pendaftaran</button></div>
       </div>
     </div>
-    ${r.jenis === "seminar" ? `<h3 style="margin-top:16px">Kehadiran di seminar ini (${hadirAll.filter(k => k.pendaftaran_id === r.id).length})</h3><div id="dhadir" class="thumbs"></div>` : ""}`;
+    ${r.jenis === "seminar" ? `<div class="row" style="justify-content:space-between;margin-top:16px"><h3 style="margin:0">Kehadiran di seminar ini (${hadirAll.filter(k => k.pendaftaran_id === r.id).length})</h3><button id="dhadirx">Unduh presensi (Excel)</button></div><div id="dhadir" class="thumbs" style="margin-top:10px"></div>` : ""}`;
   const form = () => ({status: $("dstatus").value, catatan_admin: $("dcat").value.trim() || null, jadwal_tanggal: $("dtgl").value || null,
     jadwal_mulai: $("dmulai").value || null, jadwal_selesai: $("dselesai").value || null, moda: $("dmoda").value || null,
-    ruang: $("druang").value.trim() || null, penguji: [$("dpeng1").value.trim(), $("dpeng2").value.trim()].filter(Boolean).join("; ") || null});
+    ruang: $("druang").value.trim() || null, penguji: [$("dpeng1").value.trim(), $("dpeng2").value.trim()].filter(Boolean).join("; ") || null,
+    ...(r.jenis === "seminar" ? {presensi_buka: $("dpbuka").value || null, presensi_tutup: $("dptutup").value || null} : {})});
   const warn = () => { const f = form(), w = bentrok(r, f);
     const dobel = daftarNama(f.penguji).filter(p => pembimbingOf(r.kode).some(q => namaKunci(q) === namaKunci(p)));
     if (dobel.length) w.unshift(`${dobel.join(", ")} adalah pembimbing Kode ini, bukan penguji.`);
@@ -1027,6 +1103,7 @@ function openDetail(id) {
   $("dsave").onclick = async () => {
     const f = form();
     if (f.jadwal_mulai && f.jadwal_selesai && f.jadwal_selesai <= f.jadwal_mulai) { msg($("dmsg"), "err", "Jam selesai harus setelah jam mulai."); return; }
+    if (f.presensi_buka && f.presensi_tutup && f.presensi_tutup <= f.presensi_buka) { msg($("dmsg"), "err", "Jam presensi ditutup harus setelah jam dibuka."); return; }
     const {error} = await sb.from("pendaftaran").update(f).eq("id", r.id);
     if (error) { msg($("dmsg"), "err", esc(error.message)); return; }
     Object.assign(r, f); renderPend(); renderJadwal(); toast("Tersimpan."); $("dlg").close();
@@ -1058,6 +1135,10 @@ function openDetail(id) {
     window.open(data.signedUrl, "_blank", "noopener");
   });
   $("dzip").onclick = () => zipRegs([r]);
+  $("dinvcal").onclick = () => undang(r, "kalender");
+  $("dinvmail").onclick = () => undang(r, "email");
+  $("dinvcopy").onclick = () => undang(r, "salin");
+  if ($("dhadirx")) $("dhadirx").onclick = () => unduhPresensi([r]);
   if (!$("dlg").open) $("dlg").showModal();
   dlgSem = r.jenis === "seminar" ? r.id : null;
   if (dlgSem) galeriHadir(hadirAll.filter(k => k.pendaftaran_id === r.id), $("dhadir"));
@@ -1072,17 +1153,156 @@ async function galeriHadir(list, el) {
   el.innerHTML = list.map(k => { const a = nimInfo(k.nim) || {};
     return `<figure>${k.foto ? `<a href="${esc(urls[k.foto] || "#")}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(urls[k.foto] || "")}" alt="Selfie ${esc(a.nama || k.nim)}"></a>` : `<div class="note" style="padding:30px 8px;text-align:center">input manual</div>`}
       <figcaption><b>${esc(a.nama || k.nim)}</b><br>${esc(k.nim)}${k.bertanya ? `<br><span class="good">Bertanya:</span> ${esc(k.pertanyaan || "")}` : ""}
-      <br>${k.status === "Ditolak" ? '<span class="bad">Ditolak</span>' : "Sah"} · <button class="ghost" data-tog="${esc(k.id)}" style="min-height:26px;padding:0 6px;font-size:12px">${k.status === "Ditolak" ? "Jadikan sah" : "Tolak"}</button></figcaption></figure>`; }).join("");
+      <br><span class="note">${esc(jamWIB(k.created_at))}${k.sumber === "manual" ? " · input admin" : ""}</span>
+      <br>Peserta: ${stHTML(k.status)} <button class="ghost" data-tog="${esc(k.id)}" style="min-height:26px;padding:0 6px;font-size:12px">${k.status === "Ditolak" ? "Sahkan" : "Tolak"}</button>
+      ${k.bertanya ? `<br>Penanya: ${stHTML(k.tanya_status)} <button class="ghost" data-togq="${esc(k.id)}" style="min-height:26px;padding:0 6px;font-size:12px">${k.tanya_status === "Ditolak" ? "Sahkan" : "Tolak"}</button>` : ""}</figcaption></figure>`; }).join("");
 }
-$("dbody").addEventListener("click", e => { const b = e.target.closest("button[data-tog]"); if (b) toggleHadir(b.dataset.tog); });
-async function toggleHadir(id) {
+$("dbody").addEventListener("click", e => { const b = e.target.closest("button[data-tog]"), q = e.target.closest("button[data-togq]"); if (b) toggleHadir(b.dataset.tog); if (q) toggleHadir(q.dataset.togq, "tanya_status"); });
+const stHTML = v => v === "Ditolak" ? '<span class="bad">Ditolak</span>' : '<span class="good">Sah</span>';
+const jamWIB = iso => { if (!iso) return ""; const d = new Date(new Date(iso).getTime() + 7 * 3600e3); return `${pad(d.getUTCHours())}.${pad(d.getUTCMinutes())} WIB`; };
+async function toggleHadir(id, kolom = "status") {
   const k = hadirAll.find(x => x.id === id); if (!k) return;
-  const status = k.status === "Ditolak" ? "Sah" : "Ditolak";
-  const {error} = await sb.from("kehadiran").update({status}).eq("id", id);
+  const nilai = k[kolom] === "Ditolak" ? "Sah" : "Ditolak";
+  const {error} = await sb.from("kehadiran").update({[kolom]: nilai}).eq("id", id);
   if (error) { toast(error.message); return; }
-  k.status = status; renderHadir(); toast(`Presensi ${k.nim}: ${status}.`);
+  k[kolom] = nilai; renderHadir(); toast(`${(nimInfo(k.nim) || {}).nama || k.nim}: ${kolom === "status" ? "peserta" : "penanya"} ${nilai.toLowerCase()}.`);
   if ($("dlg").open && $("dhadir") && dlgSem) galeriHadir(hadirAll.filter(x => x.pendaftaran_id === dlgSem), $("dhadir"));
 }
+
+/* ---- undangan Outlook ---- */
+const TPL_BAWAAN = {
+  seminar: {subjek: "Undangan Seminar Proposal Tugas Akhir {kode} | {hari_tanggal}", isi: `Kepada Yth.
+Bapak/Ibu FM Pembimbing dan Penguji Tugas Akhir Mahasiswa/i
+Peserta Seminar Tugas Akhir
+
+
+Berikut kami sampaikan Undangan Seminar Tugas Akhir dari Mahasiswa {angkatan}:
+
+Kode: {kode}
+Mahasiswa: {mahasiswa}
+Judul: {judul}
+Hari/Tanggal: {hari_tanggal}
+Waktu: {jam} WIB
+Tempat: {tempat}
+Dosen Pembimbing: {pembimbing}
+Dosen Penguji: {penguji}
+
+Adapun beberapa dokumen untuk keperluan Seminar dapat Bapak/Ibu akses melalui tautan berikut:
+1. Materi Seminar Mahasiswa : {kode} {link_materi}
+2. Form Penilaian Proposal : terlampir
+3. Form Penilaian Seminar : terlampir
+4. Tata Tertib Seminar : terlampir
+
+Jika ada informasi yang belum jelas mohon disampaikan ke Bapak Ayomi (Koordinator Tugas akhir BM) dan Anggita (Admin Tugas Akhir BM). Mohon untuk mensubmit kembali dokumen penilaian setelah selesai seminar.
+
+Demikian undangan ini kami sampaikan. Atas bantuan dan kerja sama yang baik, kami ucapkan terima kasih.
+
+
+Regards,
+
+Anggita
+untuk Bapak Ayomi, Koordinator TA BM`},
+  sidang: {subjek: "Undangan Sidang Skripsi {kode} | {hari_tanggal}", isi: `Kepada Yth.
+Bapak/Ibu FM Pembimbing dan Penguji Tugas Akhir Mahasiswa/i
+Peserta Sidang Tugas Akhir
+
+
+Berikut kami sampaikan Undangan Sidang Tugas Akhir dari Mahasiswa {angkatan}:
+
+Kode: {kode}
+Mahasiswa: {mahasiswa}
+Judul: {judul}
+Hari/Tanggal: {hari_tanggal}
+Waktu: {jam} WIB
+Tempat: {tempat}
+Dosen Pembimbing: {pembimbing}
+Dosen Penguji: {penguji}
+
+Adapun beberapa dokumen untuk keperluan Sidang dapat Bapak/Ibu akses melalui tautan berikut:
+1. Materi Sidang Mahasiswa : {kode} {link_materi}
+2. Form Penilaian Sidang : terlampir
+3. Form Penilaian Proses Bimbingan : terlampir
+4. Tata Tertib Sidang : terlampir
+
+Jika ada informasi yang belum jelas mohon disampaikan ke Bapak Ayomi (Koordinator Tugas akhir BM) dan Anggita (Admin Tugas Akhir BM). Mohon untuk mensubmit kembali dokumen penilaian setelah selesai sidang.
+
+Demikian undangan ini kami sampaikan. Atas bantuan dan kerja sama yang baik, kami ucapkan terima kasih.
+
+
+Regards,
+
+Anggita
+untuk Bapak Ayomi, Koordinator TA BM`}
+};
+const tplOf = j => ({...TPL_BAWAAN[j], ...((undangan || {})[j] || {})});
+const isiTpl = (t, v) => String(t).replace(/\{(\w+)\}/g, (m, k) => k in v ? v[k] : m);
+async function undang(r, mode) {
+  const out = $("dinvmsg"), w = mode === "salin" ? null : window.open("about:blank", "_blank");   // dibuka langsung agar tidak diblokir browser
+  const gagal = h => { if (w) w.close(); msg(out, "err", h); };
+  if (!r.jadwal_tanggal || !r.jadwal_mulai) return gagal("Isi dan simpan tanggal serta jam mulai lebih dulu.");
+  const ang = anggotaAll.filter(a => a.kode === r.kode).sort((x, y) => x.urutan - y.urutan);
+  const pemb = pembimbingOf(r.kode), peng = daftarNama(r.penguji), dosen = [...pemb, ...peng];
+  const tanpa = dosen.filter(n => !dosenEmail(n));
+  const emails = [...new Set([...dosen.map(dosenEmail), ...ang.map(emailMhs)].filter(Boolean))];
+  let link = "(berkas presentasi belum ada)";
+  const pres = (r.berkas || []).find(b => b.key === "presentasi");
+  if (pres) { const {data} = await sb.storage.from(BUCKET).createSignedUrl(pres.path, 60 * 60 * 24 * 30); if (data) link = data.signedUrl; }
+  const selesai = r.jadwal_selesai || (() => { const [h, m] = r.jadwal_mulai.split(":").map(Number), t = h * 60 + m + 60; return `${pad(Math.floor(t / 60) % 24)}:${pad(t % 60)}`; })();
+  const v = {jenis: JENIS_LABEL[r.jenis], kode: r.kode, mahasiswa: ang.map(a => a.nama).join(", "), judul: r.judul, hari_tanggal: tglPanjang(r.jadwal_tanggal, true),
+    jam: `${jam(r.jadwal_mulai)}-${jam(selesai)}`, tempat: [r.moda, r.ruang].filter(Boolean).join(" · ") || "-", pembimbing: pemb.join("; ") || "-", penguji: peng.join("; ") || "-",
+    angkatan: ang[0] ? "BM20" + ang[0].nim.slice(0, 2) : "BM", link_materi: link};
+  const t = tplOf(r.jenis), subjek = isiTpl(t.subjek, v), isi = isiTpl(t.isi, v);
+  const salin = `Kepada: ${emails.join("; ")}\nSubjek: ${subjek}\n\n${isi}`;
+  try { await navigator.clipboard.writeText(mode === "kalender" ? emails.join("; ") : salin); } catch (e) { /* clipboard tidak tersedia */ }
+  const q = o => Object.entries(o).map(([k, x]) => k + "=" + encodeURIComponent(x)).join("&");
+  if (mode === "kalender") w.location = "https://outlook.office.com/calendar/deeplink/compose?" + q({path: "/calendar/action/compose", rru: "addevent", subject: subjek, body: isi,
+    location: v.tempat, startdt: `${r.jadwal_tanggal}T${r.jadwal_mulai.slice(0, 5)}:00+07:00`, enddt: `${r.jadwal_tanggal}T${selesai.slice(0, 5)}:00+07:00`, to: emails.join(",")});
+  if (mode === "email") w.location = "https://outlook.office.com/mail/deeplink/compose?" + q({to: emails.join(","), subject: subjek, body: isi});
+  msg(out, tanpa.length ? "err" : "ok", (mode === "kalender" ? `Outlook dibuka. <b>${emails.length} alamat email peserta sudah disalin</b>; tempel di kolom peserta (Invite attendees) bila belum terisi.`
+    : mode === "email" ? `Draft email Outlook dibuka untuk ${emails.length} penerima.` : `Penerima dan isi undangan sudah disalin (${emails.length} alamat).`)
+    + (tanpa.length ? `<br>Email belum diisi untuk: <b>${tanpa.map(esc).join(", ")}</b>. Lengkapi di tab Data Kode → Email dosen.` : "")
+    + `<br><span class="note">Lampirkan Form Penilaian dan Tata Tertib secara manual di Outlook. Tautan materi berlaku 30 hari.</span>`);
+}
+function renderTemplate() { const t = tplOf($("ujenis").value); $("usubjek").value = t.subjek; $("uisi").value = t.isi; }
+$("ujenis").addEventListener("change", renderTemplate);
+$("usave").addEventListener("click", async () => {
+  const baru = {...undangan, [$("ujenis").value]: {subjek: $("usubjek").value, isi: $("uisi").value}};
+  const {error} = await sb.from("pengaturan").upsert({kunci: "undangan", nilai: baru});
+  if (error) { toast(error.message); return; }
+  undangan = baru; toast("Template undangan disimpan.");
+});
+$("ureset").addEventListener("click", () => { const t = TPL_BAWAAN[$("ujenis").value]; $("usubjek").value = t.subjek; $("uisi").value = t.isi; toast("Template bawaan dimuat. Klik Simpan untuk memakainya."); });
+
+/* ---- unduh presensi per seminar ---- */
+function lembarPresensi(r) {
+  const ang = anggotaAll.filter(a => a.kode === r.kode).map(a => a.nama).join(", ");
+  const list = hadirAll.filter(k => k.pendaftaran_id === r.id).sort((x, y) => String(x.created_at).localeCompare(String(y.created_at)));
+  const sah = list.filter(k => k.status !== "Ditolak"), tanya = sah.filter(k => k.bertanya && k.tanya_status !== "Ditolak");
+  const aoa = [[`PRESENSI ${JENIS_LABEL[r.jenis].toUpperCase()}${r.percobaan > 1 ? ` (ULANG KE-${r.percobaan - 1})` : ""}`], ["Kode", r.kode], ["Mahasiswa", ang], ["Judul", r.judul],
+    ["Hari/Tanggal", r.jadwal_tanggal ? tglPanjang(r.jadwal_tanggal, true) : "-"], ["Jam", `${jam(r.jadwal_mulai)}${r.jadwal_selesai ? "-" + jam(r.jadwal_selesai) : ""} WIB`],
+    ["Tempat", [r.moda, r.ruang].filter(Boolean).join(" · ")], ["Pembimbing", pembimbingOf(r.kode).join("; ")], ["Penguji", daftarNama(r.penguji).join("; ")],
+    ["Jumlah hadir (sah)", sah.length], ["Jumlah penanya (sah)", tanya.length], [],
+    ["No", "NIM", "Nama", "Kode mahasiswa", "Waktu presensi", "Bertanya", "Pertanyaan", "Status peserta", "Status penanya", "Sumber", "Catatan"]];
+  list.forEach((k, i) => { const a = nimInfo(k.nim) || {}; aoa.push([i + 1, k.nim, a.nama || "", a.kode || "", jamWIB(k.created_at), k.bertanya ? "Ya" : "Tidak", k.pertanyaan || "",
+    k.status, k.bertanya ? k.tanya_status : "", k.sumber === "manual" ? "Input admin" : "Selfie", k.catatan || ""]); });
+  const ws = XLSX.utils.aoa_to_sheet(aoa); ws["!cols"] = [5, 14, 32, 10, 12, 9, 50, 13, 13, 11, 30].map(w => ({wch: w}));
+  return ws;
+}
+function unduhPresensi(regs) {
+  regs = regs.filter(r => r.jenis === "seminar" && r.jadwal_tanggal).sort((a, b) => (a.jadwal_tanggal + a.jadwal_mulai).localeCompare(b.jadwal_tanggal + b.jadwal_mulai));
+  if (!regs.length) { toast("Belum ada seminar terjadwal."); return; }
+  const wb = XLSX.utils.book_new(), pakai = new Set();
+  if (regs.length > 1) {
+    const rk = [["Tanggal", "Jam", "Kode", "Judul", "Hadir (sah)", "Penanya (sah)"]].concat(regs.map(r => { const l = hadirAll.filter(k => k.pendaftaran_id === r.id && k.status !== "Ditolak");
+      return [tglPanjang(r.jadwal_tanggal), jam(r.jadwal_mulai), r.kode + (r.percobaan > 1 ? " (ulang)" : ""), r.judul, l.length, l.filter(k => k.bertanya && k.tanya_status !== "Ditolak").length]; }));
+    const ws = XLSX.utils.aoa_to_sheet(rk); ws["!cols"] = [18, 7, 14, 60, 11, 13].map(w => ({wch: w})); XLSX.utils.book_append_sheet(wb, ws, "Ringkasan");
+  }
+  regs.forEach(r => { let nm = `${r.kode} ${r.jadwal_tanggal.slice(5)}`.replace(/[\\/?*\[\]:]/g, "-").slice(0, 28), i = 2; while (pakai.has(nm)) nm = nm.slice(0, 26) + " " + i++; pakai.add(nm);
+    XLSX.utils.book_append_sheet(wb, lembarPresensi(r), nm); });
+  const nama = regs.length === 1 ? `Presensi Seminar_${regs[0].kode}_${regs[0].jadwal_tanggal}.xlsx` : "Presensi Seminar per Judul.xlsx";
+  saveBlob(new Blob([XLSX.write(wb, {bookType: "xlsx", type: "array"})]), nama);
+}
+$("kperjudul").addEventListener("click", () => unduhPresensi(pend));
 
 const zipName = r => `Berkas ${JENIS_ZIP[r.jenis]}_${r.kode}${r.percobaan > 1 ? ` (ulang ke-${r.percobaan - 1})` : ""}`;
 const ansi = s => String(s == null ? "" : s).normalize("NFKD").replace(/[^\x20-\x7E]/g, "");
@@ -1097,12 +1317,12 @@ async function rekapHadirPdf(kode) {        // "02 Rekap Kehadiran Seminar_<Kode
   line(`Syarat daftar sidang: minimal ${syaratHadir.hadir}x hadir dan ${syaratHadir.bertanya}x bertanya (presensi berstatus Ditolak tidak dihitung).`, 50, 9, f, rgb(0.36, 0.4, 0.5)); y -= 26;
   for (const a of anggotaAll.filter(x => x.kode === kode).sort((p, q) => p.urutan - q.urutan)) {
     const list = hadirAll.filter(k => k.nim === a.nim).sort((p, q) => String(p.tanggal).localeCompare(String(q.tanggal)));
-    const sah = list.filter(k => k.status !== "Ditolak"), t = sah.filter(k => k.bertanya).length;
+    const sah = list.filter(k => k.status !== "Ditolak"), t = sah.filter(k => k.bertanya && k.tanya_status !== "Ditolak").length;
     need(60); line(`${a.nama} (${a.nim})`, 50, 11.5, fb); y -= 15;
     line(`Hadir ${sah.length}x, bertanya ${t}x  -  ${sah.length >= syaratHadir.hadir && t >= syaratHadir.bertanya ? "MEMENUHI" : "BELUM MEMENUHI"}`, 50, 10); y -= 16;
     line("No", 50, 9, fb); line("Tanggal", 75, 9, fb); line("Seminar", 190, 9, fb); line("Bertanya", 260, 9, fb); line("Sumber", 320, 9, fb); line("Status", 380, 9, fb); y -= 4;
     pg.drawLine({start: {x: 50, y}, end: {x: 545, y}, thickness: .6, color: rgb(.8, .83, .9)}); y -= 12;
-    list.forEach((k, i) => { need(14); line(String(i + 1), 50, 9); line(tglPanjang(k.tanggal), 75, 9); line(k.kode_seminar || "-", 190, 9); line(k.bertanya ? "Ya" : "-", 260, 9); line(k.sumber === "manual" ? "Input admin" : "Selfie", 320, 9); line(k.status, 380, 9); y -= 13; });
+    list.forEach((k, i) => { need(14); line(String(i + 1), 50, 9); line(tglPanjang(k.tanggal), 75, 9); line(k.kode_seminar || "-", 190, 9); line(k.bertanya ? (k.tanya_status === "Ditolak" ? "Ditolak" : "Ya") : "-", 260, 9); line(k.sumber === "manual" ? "Input admin" : "Selfie", 320, 9); line(k.status, 380, 9); y -= 13; });
     if (!list.length) { line("Belum ada kehadiran tercatat.", 75, 9); y -= 13; }
     y -= 14;
   }
@@ -1153,12 +1373,12 @@ $("jagenda").addEventListener("click", e => { const tr = e.target.closest("tr[da
 const semLabel = k => { const p = pend.find(x => x.id === k.pendaftaran_id); return (p ? p.kode : k.kode_seminar) || "–"; };
 function rekapHadir() {
   return anggotaAll.filter(a => kodeInfo(a.kode)).map(a => {
-    const sah = hadirAll.filter(k => k.nim === a.nim && k.status !== "Ditolak"), t = sah.filter(k => k.bertanya).length;
+    const sah = hadirAll.filter(k => k.nim === a.nim && k.status !== "Ditolak"), t = sah.filter(k => k.bertanya && k.tanya_status !== "Ditolak").length;
     return {...a, hadir: sah.length, bertanya: t, ok: sah.length >= syaratHadir.hadir && t >= syaratHadir.bertanya};
   }).sort((x, y) => x.kode.localeCompare(y.kode) || x.urutan - y.urutan);
 }
 function renderHadir() {
-  $("kminh").value = syaratHadir.hadir; $("kmint").value = syaratHadir.bertanya;
+  $("kminh").value = syaratHadir.hadir; $("kmint").value = syaratHadir.bertanya; $("kbuka").value = jendela.sebelum; $("ktutup").value = jendela.sesudah;
   const sems = pend.filter(p => p.jenis === "seminar" && p.jadwal_tanggal).sort((a, b) => b.jadwal_tanggal.localeCompare(a.jadwal_tanggal));
   const cur = $("kmsem").value;
   $("kmsem").innerHTML = sems.map(p => `<option value="${esc(p.id)}">${esc(tglPanjang(p.jadwal_tanggal))} · ${esc(p.kode)}${p.percobaan > 1 ? " (ulang)" : ""}</option>`).join("") + `<option value="">Seminar di luar portal (isi tanggal &amp; Kode)</option>`;
@@ -1174,15 +1394,17 @@ function renderHadir() {
   $("kdet").innerHTML = det.map(k => { const a = nimInfo(k.nim) || {};
     return `<tr><td>${esc(tglPanjang(k.tanggal))}</td><td>${esc(semLabel(k))}</td><td>${esc(k.nim)}</td><td>${esc(a.nama || "")}</td><td>${k.bertanya ? "Ya" + (k.pertanyaan ? `<br><span class="note">${esc(k.pertanyaan)}</span>` : "") : "–"}</td>
       <td>${k.sumber === "manual" ? "Input admin" : (k.foto ? `<button class="ghost" data-foto="${esc(k.foto)}" style="min-height:30px;padding:0 8px">Lihat selfie</button>` : "Selfie")}${k.catatan ? `<br><span class="note">${esc(k.catatan)}</span>` : ""}</td>
-      <td>${k.status === "Ditolak" ? '<span class="bad">Ditolak</span>' : '<span class="good">Sah</span>'}</td>
-      <td class="row" style="gap:4px;flex-wrap:nowrap"><button class="ghost" data-tog="${esc(k.id)}" style="min-height:30px;padding:0 8px">${k.status === "Ditolak" ? "Jadikan sah" : "Tolak"}</button><button class="ghost danger" data-hdel="${esc(k.id)}" style="min-height:30px;padding:0 8px">Hapus</button></td></tr>`; }).join("")
-    || `<tr><td colspan="8" class="note">Belum ada presensi.</td></tr>`;
+      <td>${stHTML(k.status)}<br><button class="ghost" data-tog="${esc(k.id)}" style="min-height:28px;padding:0 8px;font-size:12.5px">${k.status === "Ditolak" ? "Jadikan sah" : "Tolak peserta"}</button></td>
+      <td>${k.bertanya ? `${stHTML(k.tanya_status)}<br><button class="ghost" data-togq="${esc(k.id)}" style="min-height:28px;padding:0 8px;font-size:12.5px">${k.tanya_status === "Ditolak" ? "Jadikan sah" : "Tolak penanya"}</button>` : '<span class="note">–</span>'}</td>
+      <td><button class="ghost danger" data-hdel="${esc(k.id)}" style="min-height:30px;padding:0 8px">Hapus</button></td></tr>`; }).join("")
+    || `<tr><td colspan="9" class="note">Belum ada presensi.</td></tr>`;
 }
 ["kcari"].forEach(i => $(i).addEventListener("input", renderHadir));
 ["kfilter", "kmsem"].forEach(i => $(i).addEventListener("change", renderHadir));
 $("kdet").addEventListener("click", async e => {
-  const t = e.target.closest("button[data-tog]"), d = e.target.closest("button[data-hdel]"), f = e.target.closest("button[data-foto]");
+  const t = e.target.closest("button[data-tog]"), d = e.target.closest("button[data-hdel]"), f = e.target.closest("button[data-foto]"), tq = e.target.closest("button[data-togq]");
   if (t) toggleHadir(t.dataset.tog);
+  if (tq) toggleHadir(tq.dataset.togq, "tanya_status");
   if (f) { const {data, error} = await sb.storage.from(BUCKET).createSignedUrl(f.dataset.foto, 600); if (error) toast("Gagal membuka foto."); else window.open(data.signedUrl, "_blank", "noopener"); }
   if (d) {
     const k = hadirAll.find(x => x.id === d.dataset.hdel); if (!k || !confirm(`Hapus presensi ${k.nim} di seminar ${semLabel(k)}?`)) return;
@@ -1194,9 +1416,10 @@ $("kdet").addEventListener("click", async e => {
 });
 $("ksyarat").addEventListener("click", async () => {
   const v = {hadir: Math.max(0, parseInt($("kminh").value, 10) || 0), bertanya: Math.max(0, parseInt($("kmint").value, 10) || 0)};
-  const {error} = await sb.from("pengaturan").upsert({kunci: "syarat_kehadiran", nilai: v});
+  const jd = {sebelum: Math.min(240, Math.max(0, parseInt($("kbuka").value, 10) || 0)), sesudah: Math.min(600, Math.max(1, parseInt($("ktutup").value, 10) || 20))};
+  const {error} = await sb.from("pengaturan").upsert([{kunci: "syarat_kehadiran", nilai: v}, {kunci: "presensi", nilai: jd}]);
   if (error) { toast(error.message); return; }
-  syaratHadir = v; renderHadir(); toast("Syarat kehadiran disimpan.");
+  syaratHadir = v; jendela = jd; renderHadir(); toast("Pengaturan kehadiran disimpan.");
 });
 $("kmsave").addEventListener("click", async () => {
   const sem = $("kmsem").value, nim = $("kmnim").value, a = nimInfo(nim) || {};
@@ -1221,9 +1444,9 @@ $("kxlsx").addEventListener("click", () => {
   const r1 = [["Kode", "NIM", "Nama", "Hadir", "Bertanya", `Syarat (${syaratHadir.hadir}x hadir, ${syaratHadir.bertanya}x bertanya)`]].concat(rekapHadir().map(r => [r.kode, r.nim, r.nama, r.hadir, r.bertanya, r.ok ? "Memenuhi" : "Belum"]));
   const ws1 = XLSX.utils.aoa_to_sheet(r1); ws1["!cols"] = [9, 14, 34, 8, 9, 30].map(w => ({wch: w}));
   XLSX.utils.book_append_sheet(wb, ws1, "Rekap Kehadiran");
-  const r2 = [["Tanggal", "Seminar (Kode penyaji)", "NIM", "Nama", "Kode", "Bertanya", "Pertanyaan", "Sumber", "Status", "Catatan"]].concat(hadirAll.slice().sort((x, y) => String(x.tanggal).localeCompare(String(y.tanggal))).map(k => { const a = nimInfo(k.nim) || {};
-    return [k.tanggal ? new Date(k.tanggal + "T00:00") : null, semLabel(k), k.nim, a.nama || "", a.kode || "", k.bertanya ? "Ya" : "Tidak", k.pertanyaan || "", k.sumber === "manual" ? "Input admin" : "Selfie", k.status, k.catatan || ""]; }));
-  const ws2 = XLSX.utils.aoa_to_sheet(r2, {cellDates: true, dateNF: "dd/mm/yyyy"}); ws2["!cols"] = [12, 20, 14, 34, 9, 9, 50, 12, 9, 30].map(w => ({wch: w}));
+  const r2 = [["Tanggal", "Seminar (Kode penyaji)", "NIM", "Nama", "Kode", "Bertanya", "Pertanyaan", "Sumber", "Status peserta", "Status penanya", "Catatan"]].concat(hadirAll.slice().sort((x, y) => String(x.tanggal).localeCompare(String(y.tanggal))).map(k => { const a = nimInfo(k.nim) || {};
+    return [k.tanggal ? new Date(k.tanggal + "T00:00") : null, semLabel(k), k.nim, a.nama || "", a.kode || "", k.bertanya ? "Ya" : "Tidak", k.pertanyaan || "", k.sumber === "manual" ? "Input admin" : "Selfie", k.status, k.bertanya ? k.tanya_status : "", k.catatan || ""]; }));
+  const ws2 = XLSX.utils.aoa_to_sheet(r2, {cellDates: true, dateNF: "dd/mm/yyyy"}); ws2["!cols"] = [12, 20, 14, 34, 9, 9, 50, 12, 12, 12, 30].map(w => ({wch: w}));
   XLSX.utils.book_append_sheet(wb, ws2, "Detail Presensi");
   saveBlob(new Blob([XLSX.write(wb, {bookType: "xlsx", type: "array"})]), "Rekap Kehadiran Seminar Proposal.xlsx");
 });
@@ -1327,8 +1550,124 @@ $("nxlsx").addEventListener("click", () => {
 });
 
 /* ---- data kode ---- */
+const EMAIL_MHS = "@student.prasetiyamulya.ac.id";
+const emailMhs = a => (a && a.email) || (a ? a.nim + EMAIL_MHS : "");
+const dosenEmail = nama => { const d = dosenAll.find(x => namaKunci(x.nama) === namaKunci(nama)); return d && d.email ? d.email : ""; };
+function pengujiKode(kode) {           // penguji dari pendaftaran terbaru per jenis
+  const out = {};
+  ["seminar", "sidang"].forEach(j => { const r = pend.find(x => x.kode === kode && x.jenis === j && x.penguji); if (r) out[j] = daftarNama(r.penguji); });
+  return out;
+}
+const semuaDosen = () => {               // nama dosen dari tabel dosen + data Kode + kolom penguji
+  const peran = {};
+  const tambah = (n, p) => { if (!n) return; const k = namaKunci(n); (peran[k] = peran[k] || {nama: n, peran: new Set()}).peran.add(p); };
+  dosenAll.forEach(d => tambah(d.nama, ""));
+  rosterAll.filter(r => r.aktif).forEach(r => { tambah(r.pembimbing1, "Pembimbing"); tambah(r.pembimbing2, "Pembimbing"); });
+  pend.forEach(r => daftarNama(r.penguji).forEach(n => tambah(n, "Penguji")));
+  return Object.values(peran).sort((a, b) => a.nama.localeCompare(b.nama));
+};
+const orangHTML = list => list.map(n => `${esc(n)}<br><span class="em ${dosenEmail(n) ? "" : "miss"}">${esc(dosenEmail(n) || "email belum diisi")}</span>`).join("<br>");
 function renderRoster() {
-  $("rsbody").innerHTML = roster.map(r => `<tr><td><b>${esc(r.kode)}</b></td><td>${anggotaAll.filter(a => a.kode === r.kode).map(a => `${esc(a.nama)} <span class="note">(${esc(a.nim)})</span>`).join("<br>")}</td><td>${esc(r.pembimbing1)}</td><td>${esc(r.pembimbing2 || "")}</td></tr>`).join("");
+  const q = $("rcari").value.trim().toLowerCase(), semua = $("rnonaktif").checked;
+  const rows = rosterAll.filter(r => (semua || r.aktif) && (!q || [r.kode, r.pembimbing1, r.pembimbing2, ...anggotaAll.filter(a => a.kode === r.kode).map(a => a.nama + " " + a.nim)].join(" ").toLowerCase().includes(q)));
+  $("rsbody").innerHTML = rows.map(r => { const pg = pengujiKode(r.kode);
+    return `<tr${r.aktif ? "" : ' style="opacity:.55"'}><td><b>${esc(r.kode)}</b><br><span class="note">${esc(r.jenis)}${r.aktif ? "" : " · nonaktif"}</span></td>
+      <td>${anggotaAll.filter(a => a.kode === r.kode).sort((x, y) => x.urutan - y.urutan).map(a => `${esc(a.nama)} <span class="note">(${esc(a.nim)})</span><br><span class="em">${esc(emailMhs(a))}</span>`).join("<br>") || '<span class="note">–</span>'}</td>
+      <td>${orangHTML([r.pembimbing1, r.pembimbing2].filter(Boolean))}</td>
+      <td>${pg.seminar ? `<span class="note">Seminar:</span><br>${orangHTML(pg.seminar)}` : ""}${pg.sidang ? `${pg.seminar ? "<br>" : ""}<span class="note">Sidang:</span><br>${orangHTML(pg.sidang)}` : ""}${!pg.seminar && !pg.sidang ? '<span class="note">belum ditetapkan</span>' : ""}</td>
+      <td><button class="ghost" data-kode="${esc(r.kode)}" style="min-height:32px">Ubah</button></td></tr>`; }).join("") || `<tr><td colspan="5" class="note">Tidak ada data.</td></tr>`;
+  const ds = semuaDosen();
+  $("dsbody").innerHTML = ds.map((d, i) => `<tr><td><input class="dsinp" data-i="${i}" data-f="nama" value="${esc(d.nama)}"></td>
+    <td><input class="dsinp" type="email" data-i="${i}" data-f="email" value="${esc(dosenEmail(d.nama))}" placeholder="nama@prasetiyamulya.ac.id"${dosenEmail(d.nama) ? "" : ' style="border-color:var(--red)"'}></td>
+    <td class="note">${esc([...d.peran].filter(Boolean).join(", ") || "–")}</td><td><button class="ghost danger" data-dsdel="${esc(d.nama)}" style="min-height:30px;padding:0 8px">Hapus</button></td></tr>`).join("");
+}
+["rcari"].forEach(i => $(i).addEventListener("input", renderRoster));
+$("rnonaktif").addEventListener("change", renderRoster);
+$("rsbody").addEventListener("click", e => { const b = e.target.closest("button[data-kode]"); if (b) openKode(b.dataset.kode); });
+$("radd").addEventListener("click", () => openKode(null));
+$("dsadd").addEventListener("click", () => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td><input class="dsinp" data-f="nama" placeholder="Nama dan gelar"></td><td><input class="dsinp" type="email" data-f="email" placeholder="nama@prasetiyamulya.ac.id"></td><td class="note">baru</td><td></td>`;
+  $("dsbody").appendChild(tr); tr.querySelector("input").focus();
+});
+$("dsbody").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-dsdel]"); if (!b) return;
+  if (!confirm(`Hapus ${b.dataset.dsdel} dari daftar email dosen? Data Kode dan jadwal tidak berubah.`)) return;
+  const {error} = await sb.from("dosen").delete().eq("nama", b.dataset.dsdel);
+  if (error) { toast(error.message); return; }
+  dosenAll = dosenAll.filter(d => d.nama !== b.dataset.dsdel); renderRoster(); toast("Dosen dihapus dari daftar email.");
+});
+$("dssave").addEventListener("click", async () => {
+  const rows = [...$("dsbody").querySelectorAll("tr")].map(tr => ({nama: (tr.querySelector('[data-f=nama]') || {}).value.trim(), email: ((tr.querySelector('[data-f=email]') || {}).value || "").trim() || null}))
+    .filter(r => r.nama);
+  const salah = rows.filter(r => r.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(r.email));
+  if (salah.length) { msg($("dsmsg"), "err", "Format email salah: " + salah.map(r => esc(r.nama)).join(", ")); return; }
+  const {error} = await sb.from("dosen").upsert(rows, {onConflict: "nama"});
+  if (error) { msg($("dsmsg"), "err", esc(error.message)); return; }
+  const {data} = await sb.from("dosen").select("*").order("nama"); dosenAll = data || dosenAll;
+  msg($("dsmsg"), "ok", `${rows.length} dosen tersimpan.`); renderRoster();
+});
+$("rxlsx").addEventListener("click", () => {
+  const aoa = [["Kode", "Jenis", "Aktif", "NIM", "Nama", "Email mahasiswa", "Pembimbing 1", "Email P1", "Pembimbing 2", "Email P2", "Penguji Seminar", "Penguji Sidang"]];
+  rosterAll.forEach(r => { const pg = pengujiKode(r.kode), ang = anggotaAll.filter(a => a.kode === r.kode).sort((x, y) => x.urutan - y.urutan);
+    (ang.length ? ang : [null]).forEach(a => aoa.push([r.kode, r.jenis, r.aktif ? "Ya" : "Tidak", a ? a.nim : "", a ? a.nama : "", a ? emailMhs(a) : "", r.pembimbing1, dosenEmail(r.pembimbing1), r.pembimbing2 || "", r.pembimbing2 ? dosenEmail(r.pembimbing2) : "", (pg.seminar || []).join("; "), (pg.sidang || []).join("; ")])); });
+  const wb = XLSX.utils.book_new(), ws = XLSX.utils.aoa_to_sheet(aoa); ws["!cols"] = [8, 10, 6, 13, 30, 34, 32, 30, 32, 30, 40, 40].map(w => ({wch: w}));
+  XLSX.utils.book_append_sheet(wb, ws, "Data Kode"); saveBlob(new Blob([XLSX.write(wb, {bookType: "xlsx", type: "array"})]), "Data Kode TA.xlsx");
+});
+
+function openKode(kode) {
+  dlgSem = null;
+  const r = kode ? rosterAll.find(x => x.kode === kode) : {kode: "", jenis: "Individu", pembimbing1: "", pembimbing2: "", aktif: true};
+  const ang = kode ? anggotaAll.filter(a => a.kode === kode).sort((x, y) => x.urutan - y.urutan) : [];
+  $("dtitle").textContent = kode ? "Ubah " + kode : "Tambah Kode";
+  $("dsub").textContent = kode ? "Perubahan langsung berlaku di formulir pendaftaran, presensi, dan rekap." : "Gunakan format Kel 17 atau Ind 15.";
+  const baris = a => `<div class="anggrow" data-old="${esc(a.nim || "")}"><input data-f="nim" placeholder="NIM" inputmode="numeric" value="${esc(a.nim || "")}"><input data-f="nama" placeholder="Nama lengkap" value="${esc(a.nama || "")}">
+    <input data-f="email" type="email" placeholder="${esc((a.nim || "NIM") + EMAIL_MHS)}" value="${esc(a.email || "")}"><button type="button" class="ghost danger" data-hapus style="min-height:40px">Hapus</button></div>`;
+  $("dbody").innerHTML = `<datalist id="dosen">${dosenList().map(d => `<option value="${esc(d)}">`).join("")}</datalist>
+    <div class="grid2">
+      <label class="f">Kode<input id="kkode" value="${esc(r.kode)}" ${kode ? "disabled" : 'placeholder="Kel 17"'}></label>
+      <label class="f">Jenis<select id="kjenis">${["Individu", "Kelompok"].map(j => `<option ${j === r.jenis ? "selected" : ""}>${j}</option>`).join("")}</select></label>
+      <label class="f">Dosen pembimbing 1<input id="kp1" list="dosen" value="${esc(r.pembimbing1 || "")}"></label>
+      <label class="f">Dosen pembimbing 2 (opsional)<input id="kp2" list="dosen" value="${esc(r.pembimbing2 || "")}"></label>
+    </div>
+    <label class="ck"><input type="checkbox" id="kaktif" ${r.aktif ? "checked" : ""}> Aktif (tampil di formulir pendaftaran dan rekap)</label>
+    <h3>Mahasiswa</h3>
+    <p class="note" style="margin-top:-4px">Kosongkan email untuk memakai NIM${EMAIL_MHS}. Mengubah NIM ikut memindahkan riwayat presensi mahasiswa tersebut.</p>
+    <div id="kang">${(ang.length ? ang : [{}]).map(baris).join("")}</div>
+    <button type="button" id="kangadd">Tambah mahasiswa</button>
+    <div id="kmsg2" style="margin-top:10px"></div>
+    <div class="row" style="margin-top:6px"><button class="pri" id="ksave">Simpan</button></div>`;
+  $("kangadd").onclick = () => $("kang").insertAdjacentHTML("beforeend", baris({}));
+  $("kang").onclick = e => { const b = e.target.closest("button[data-hapus]"); if (b) b.parentElement.remove(); };
+  $("ksave").onclick = async () => {
+    const out = $("kmsg2"), k = $("kkode").value.trim().replace(/\s+/g, " ");
+    const rows = [...$("kang").querySelectorAll(".anggrow")].map((el, i) => ({old: el.dataset.old, nim: el.querySelector("[data-f=nim]").value.replace(/\s/g, ""),
+      nama: el.querySelector("[data-f=nama]").value.trim(), email: el.querySelector("[data-f=email]").value.trim() || null, urutan: i + 1})).filter(x => x.nim || x.nama);
+    const errs = [];
+    if (!/^(Kel|Ind) \d{2,3}$/.test(k)) errs.push("Kode harus berformat Kel 17 atau Ind 15.");
+    if (!kode && rosterAll.some(x => x.kode === k)) errs.push(`Kode ${k} sudah ada.`);
+    if (!$("kp1").value.trim()) errs.push("Isi dosen pembimbing 1.");
+    if (!rows.length) errs.push("Isi minimal satu mahasiswa.");
+    rows.forEach(x => { if (!/^\d{8,15}$/.test(x.nim)) errs.push(`NIM "${x.nim || "(kosong)"}" tidak valid.`); if (!x.nama) errs.push(`Nama untuk NIM ${x.nim} kosong.`);
+      const lain = anggotaAll.find(a => a.nim === x.nim && a.nim !== x.old); if (lain) errs.push(`NIM ${x.nim} sudah terdaftar di ${lain.kode} (${lain.nama}).`); });
+    if (new Set(rows.map(x => x.nim)).size !== rows.length) errs.push("Ada NIM ganda.");
+    const dihapus = ang.filter(a => !rows.some(x => x.old === a.nim));
+    if (errs.length) { msg(out, "err", errs.map(esc).join("<br>")); return; }
+    if (dihapus.length && !confirm(`Hapus ${dihapus.map(a => a.nama).join(", ")} dari ${k}? Riwayat presensi mahasiswa tersebut ikut terhapus.`)) return;
+    const data = {kode: k, jenis: $("kjenis").value, pembimbing1: $("kp1").value.trim(), pembimbing2: $("kp2").value.trim() || null, aktif: $("kaktif").checked};
+    let res = kode ? await sb.from("roster").update(data).eq("kode", k) : await sb.from("roster").insert(data);
+    if (res.error) { msg(out, "err", esc(res.error.message)); return; }
+    for (const a of dihapus) { res = await sb.from("roster_anggota").delete().eq("nim", a.nim); if (res.error) { msg(out, "err", esc(res.error.message)); return; } }
+    for (const x of rows) {
+      const isi = {nim: x.nim, nama: x.nama, email: x.email, kode: k, urutan: x.urutan};
+      res = x.old ? await sb.from("roster_anggota").update(isi).eq("nim", x.old) : await sb.from("roster_anggota").insert(isi);
+      if (res.error) { msg(out, "err", `${esc(x.nim)}: ${esc(res.error.message)}`); return; }
+    }
+    const [ro, an] = await Promise.all([sb.from("roster").select("*").order("kode"), sb.from("roster_anggota").select("*").order("kode")]);
+    rosterAll = ro.data || rosterAll; anggotaAll = an.data || anggotaAll;
+    await loadRoster(); renderRoster(); renderPend(); renderHadir(); $("dlg").close(); toast(`Data ${k} tersimpan.`);
+  };
+  if (!$("dlg").open) $("dlg").showModal();
 }
 
 /* =========================== ROUTER =========================== */
